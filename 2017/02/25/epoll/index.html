@@ -2,19 +2,20 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="baidu-site-verification" content="L6Lm9d5Crl"/>
-  
-  
-  
   
   <title>epoll | 暗时间</title>
+
+  <!-- keywords -->
+  
+
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="#Introduction事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。 本文探究了在linux系统下常用的epoll的原理及其使用方法，总">
+  <meta name="description" content="Introduction事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。 本文探究了在linux系统下常用的epoll的原理及其使用方法，总结">
+<meta name="keywords" content="网络编程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="epoll">
 <meta property="og:url" content="http://zhoulei.github.io/2017/02/25/epoll/index.html">
 <meta property="og:site_name" content="暗时间">
-<meta property="og:description" content="#Introduction事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。 本文探究了在linux系统下常用的epoll的原理及其使用方法，总">
+<meta property="og:description" content="Introduction事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。 本文探究了在linux系统下常用的epoll的原理及其使用方法，总结">
 <meta property="og:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image001.jpg">
 <meta property="og:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image002.jpg">
 <meta property="og:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image003.jpg">
@@ -22,272 +23,155 @@
 <meta property="og:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image005.jpg">
 <meta property="og:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image006.jpg">
 <meta property="og:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image007.jpg">
-<meta property="og:updated_time" content="2017-06-25T08:39:33.039Z">
+<meta property="og:updated_time" content="2017-06-25T09:21:09.124Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="epoll">
-<meta name="twitter:description" content="#Introduction事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。 本文探究了在linux系统下常用的epoll的原理及其使用方法，总">
+<meta name="twitter:description" content="Introduction事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。 本文探究了在linux系统下常用的epoll的原理及其使用方法，总结">
 <meta name="twitter:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image001.jpg">
   
     <link rel="alternative" href="/atom.xml" title="暗时间" type="application/atom+xml">
   
   
-    <link rel="icon" href="/img/favicon.png">
-  
-  
-  <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+    <link rel="icon" href="http://7xkj1z.com1.z0.glb.clouddn.com/head.jpg">
   
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   
   
-      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  <script src="//cdn.bootcss.com/require.js/2.3.2/require.min.js"></script>
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+
   
-  <!-- 加载特效 -->
-    <script src="/js/pace.js"></script>
-    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
-  <script>
-      var yiliaConfig = {
-          fancybox: true,
-          animate: true,
-          isHome: false,
-          isPost: true,
-          isArchive: false,
-          isTag: false,
-          isCategory: false,
-          open_in_new: false
-      }
-  </script>
 </head>
 <body>
   <div id="container">
+    <div id="particles-js"></div>
     <div class="left-col">
     <div class="overlay"></div>
 <div class="intrude-less">
-    <header id="header" class="inner">
-        <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-        <a href="/" class="profilepic">
-            
-            <img lazy-src="/img/avatar.png" class="js-avatar">
-            
-        </a>
-        <hgroup>
-          <h1 class="header-author"><a href="/">大牙苏</a></h1>
-        </hgroup>
-        
-        <p class="header-subtitle">书写是最好的思考</p>
-        
-        
-            <form>
-                <input type="text" class="st-default-search-input search" id="local-search-input" placeholder=" Search...">
-            </form>
-            <div id="local-search-result"></div>
-        
-        
-            <script type="text/javascript">
-                (function() {
-                    'use strict';
-                    function getMatchData(keyword, data) {
-                        var matchData = [];
-                        for(var i =0;i<data.length;i++){
-                            if(data[i].title.toLowerCase().indexOf(keyword)>=0) 
-                                matchData.push(data[i])
-                        }
-                        return matchData;
-                    }
-                    var $input = $('#local-search-input');
-                    var $resultContent = $('#local-search-result');
-                    $input.keyup(function(){
-                        $.ajax({
-                            url: '/search.json',
-                            dataType: "json",
-                            success: function( json ) {
-                                var str='<ul class=\"search-result-list\">';                
-                                var keyword = $input.val().trim().toLowerCase();
-                                $resultContent.innerHTML = "";
-                                if ($input.val().trim().length <= 0) {
-                                    $resultContent.empty();
-                                    $('#switch-area').show();
-                                    return;
-                                }
-                                var results = getMatchData(keyword, json);
-                                if(results.length === 0){
-                                    $resultContent.empty();
-                                    $('#switch-area').show();
-                                    return;
-                                } 
-                                for(var i =0; i<results.length; i++){
-                                    str += "<li><a href='"+ results[i].url +"' class='search-result-title'>"+ results[i].title +"</a></li>";
-                                }
-                                str += "</ul>";
-                                $resultContent.empty();
-                                $resultContent.append(str);
-                                $('#switch-area').hide();
-                            }
-                        });
-                    });
-                })();
-            </script>
-        
-        
-            <div id="switch-btn" class="switch-btn">
-                <div class="icon">
-                    <div class="icon-ctn">
-                        <div class="icon-wrap icon-house" data-idx="0">
-                            <div class="birdhouse"></div>
-                            <div class="birdhouse_holes"></div>
-                        </div>
-                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
-                            <div class="ribbon"></div>
-                        </div>
-                        
-                        <div class="icon-wrap icon-link hide" data-idx="2">
-                            <div class="loopback_l"></div>
-                            <div class="loopback_r"></div>
-                        </div>
-                        
-                        
-                        <div class="icon-wrap icon-me hide" data-idx="3">
-                            <div class="user"></div>
-                            <div class="shoulder"></div>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div class="tips-box hide">
-                    <div class="tips-arrow"></div>
-                    <ul class="tips-inner">
-                        <li>菜单</li>
-                        <li>标签</li>
-                        
-                        <li>友情链接</li>
-                        
-                        
-                        <li>关于我</li>
-                        
-                    </ul>
-                </div>
-            </div>
-        
-        <div id="switch-area" class="switch-area">
-            <div class="switch-wrap">
-                <section class="switch-part switch-part1">
-                    <nav class="header-menu">
-                        <ul>
-                        
-                            <li><a  href="/archives/">所有文章</a></li>
-                        
-                            <li><a  href="/categories/开发工具/">玩转开发工具</a></li>
-                        
-                            <li><a  href="/categories/digital">玩转数码</a></li>
-                        
-                            <li><a  href="/categories/cognition">认知提升</a></li>
-                        
-                            <li><a  href="/about/">关于我</a></li>
-                        
-                        </ul>
-                    </nav>
-                    <nav class="header-nav">
-                        <ul class="social">
-                            
-                                <a class="fl github"  target="_blank" href="/xxxxx" title="github">github</a>
-                            
-                                <a class="fl weibo"  target="_blank" href="/xxxxxxxx" title="weibo">weibo</a>
-                            
-                                <a class="fl rss"  target="_blank" href="/atom.xml" title="rss">rss</a>
-                            
-                        </ul>
-                    </nav>
-                </section>
-                
-                <section class="switch-part switch-part2">
-                    <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/网络编程/" style="font-size: 10px;">网络编程</a>
-                    </div>
-                </section>
-                
-                
-                <section class="switch-part switch-part3">
-                    <div id="js-friends">
-                    
-                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://blog.csdn.net/baidu_21483933">csdn</a>
-                    
-                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://segmentfault.com/blog/maocg_web">segmentfault</a>
-                    
-                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.jianshu.com/users/eb37ef89c746/latest_articles">简书</a>
-                    
-                    </div>
-                </section>
-                
-                
-                
-                <section class="switch-part switch-part4">
-                
-                    <div id="js-aboutme">爱动漫,爱游戏,爱编程,爱运动,爱的太多了!</div>
-                </section>
-                
-            </div>
-        </div>
-    </header>
-</div>
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&amp;pid=15.1" class="js-avatar">
+			
+		</a>
 
+		<hgroup>
+		  <h1 class="header-author"><a href="/">大牙苏</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">书写是最好的思考</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/zhouleian/" title="github">github</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/tcp-ip/" style="font-size: 10px;">tcp/ip</a> <a href="/tags/网络编程/" style="font-size: 20px;">网络编程</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
     </div>
     <div class="mid-col">
       <nav id="mobile-nav">
-      <div class="overlay">
-          <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">大牙苏</a></h1>
-      </div>
-    <div class="intrude-less">
-        <header id="header" class="inner">
-            <a href="/" class="profilepic">
-                
-                    <img lazy-src="/img/avatar.png" class="js-avatar">
-                
-            </a>
-            <hgroup>
-              <h1 class="header-author"><a href="/" title="回到主页">大牙苏</a></h1>
-            </hgroup>
-            
-            <p class="header-subtitle">书写是最好的思考</p>
-            
-            <nav class="header-menu">
-                <ul>
-                
-                    <li><a href="/archives/">所有文章</a></li>
-                
-                    <li><a href="/categories/开发工具/">玩转开发工具</a></li>
-                
-                    <li><a href="/categories/digital">玩转数码</a></li>
-                
-                    <li><a href="/categories/cognition">认知提升</a></li>
-                
-                    <li><a href="/about/">关于我</a></li>
-                
-                <div class="clearfix"></div>
-                </ul>
-            </nav>
-            <nav class="header-nav">
-                <div class="social">
-                    
-                        <a class="github" target="_blank" href="/xxxxx" title="github">github</a>
-                    
-                        <a class="weibo" target="_blank" href="/xxxxxxxx" title="weibo">weibo</a>
-                    
-                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-                    
-                </div>
-            </nav>
-        </header>                
-    </div>
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">大牙苏</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&amp;pid=15.1" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">大牙苏</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">书写是最好的思考</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/zhouleian/" title="github">github</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
 </nav>
       <div class="body-wrap"><article id="post-epoll" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a  href="/2017/02/25/epoll/" class="article-date">
-      <time datetime="2017-02-25T06:05:19.000Z" itemprop="datePublished">2017-02-25</time>
+      <a href="/2017/02/25/epoll/" class="article-date">
+  	<time datetime="2017-02-25T06:05:19.000Z" itemprop="datePublished">2017-02-25</time>
 </a>
-
     </div>
   
   <div class="article-inner">
@@ -300,13 +184,18 @@
   
     <h1 class="article-title" itemprop="name">
       epoll
+      
     </h1>
   
-
 
       </header>
       
       <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/网络编程/">网络编程</a></li></ul>
+	</div>
+
         
 
         
@@ -316,13 +205,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-          
-        <p>#Introduction<br>事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；<br>事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。</p>
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；<br>事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。</p>
 <p>本文探究了在linux系统下常用的epoll的原理及其使用方法，总结了自己学习并发服务器编程过程中遇到的问题。</p>
-<p>#阻塞式io</p>
-<p>传统上, 网络服务器每个连接使用单独的进程或线程来实现。我们来看一个最简单的客户端／服务器交互场景：<br><img src="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image001.jpg" alt="此处输入图片的描述"><br>除非使用fcntl显示指定，几乎所有IO接口都是阻塞型的。这给网络编程带来了很大问题，比如服务器调用send()/recv()的时候，线程会被阻塞，在此期间无法执行任何运算或响应网络请求，server在处理一个客户请求的时候无法接受别的客户，即如果在服务器阻塞时有新的客户connect，那么新的客户将得不到响应。这个程序无法同时满足两个想得到服务的用户，这是无法容忍的，试想一下你在用微信，然后告诉你有人在用，你必须等那个人走了以后才能用。这时候我们会想到使用多线程／多进程模型来实现服务器。</p>
-<p>#多进程／线程服务器</p>
-<p>应对多客户机的网络应用，最简单的解决方式是在服务器端使用多线程（或多进程）。多线程（或多进程）的目的是让每个连接都拥有独立的线程（或进程），这样任何一个连接的阻塞都不会影响其他的连接。</p>
+<h1 id="阻塞式io"><a href="#阻塞式io" class="headerlink" title="阻塞式io"></a>阻塞式io</h1><p>传统上, 网络服务器每个连接使用单独的进程或线程来实现。我们来看一个最简单的客户端／服务器交互场景：<br><img src="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image001.jpg" alt="此处输入图片的描述"><br>除非使用fcntl显示指定，几乎所有IO接口都是阻塞型的。这给网络编程带来了很大问题，比如服务器调用send()/recv()的时候，线程会被阻塞，在此期间无法执行任何运算或响应网络请求，server在处理一个客户请求的时候无法接受别的客户，即如果在服务器阻塞时有新的客户connect，那么新的客户将得不到响应。这个程序无法同时满足两个想得到服务的用户，这是无法容忍的，试想一下你在用微信，然后告诉你有人在用，你必须等那个人走了以后才能用。这时候我们会想到使用多线程／多进程模型来实现服务器。</p>
+<h1 id="多进程／线程服务器"><a href="#多进程／线程服务器" class="headerlink" title="多进程／线程服务器"></a>多进程／线程服务器</h1><p>应对多客户机的网络应用，最简单的解决方式是在服务器端使用多线程（或多进程）。多线程（或多进程）的目的是让每个连接都拥有独立的线程（或进程），这样任何一个连接的阻塞都不会影响其他的连接。</p>
 <p>具体使用多进程还是多线程，并没有一个特定的模式。传统意义上，进程的开销要远远大于线程，所以，如果需要同时为较多的客户机提供服务，则不推荐使用多进程；如果单个服务执行体需要消耗较多的 CPU 资源，譬如需要进行大规模或长时间的数据运算或文件访问，则进程较为安全。通常，使用 pthread_create () 创建新线程，fork() 创建新进程。</p>
 <p>我们假设对上述的服务器/客户机模型，提出更高的要求，即让服务器同时为多个客户机提供一问一答的服务。于是有了如下的模型。</p>
 <p><img src="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image002.jpg" alt="此处输入图片的描述"><br>在上述的线程 / 时间图例中，主线程持续等待客户端的连接请求，如果有连接，则创建新线程，并在新线程中提供为前例同样的问答服务。<br>上述多线程的服务器模型似乎完美的解决了为多个客户机提供问答服务的要求，但其实并不尽然。</p>
@@ -338,12 +224,11 @@
 </ul>
 <p>所以，换用线程虽然能解决fork开销的问题，但是调度器和内存的问题还是无法解决。所以进程和线程在本质上是一样的，被称为process-per-connection model。因为无法处理高并发而不被业界使用。</p>
 <p>接下来我们可能会考虑使用“线程池”或“连接池”。</p>
-<p>#线程池<br>“线程池”旨在减少创建和销毁线程的频率，其维持一定合理固定数量的线程，并让空闲的线程重新承担新的执行任务。“连接池”维持连接的缓存池，基本架构是有一个loop用来accept连接，之后把这个连接分配给线程池中的某个线程，处理完了以后这个线程又可以处理别的连接。尽量重用已有的连接、减少创建和关闭连接的频率。这两种技术都可以很好的降低系统开销，都被广泛应用很多大型系统，如 websphere、tomcat 和各种数据库等。</p>
+<h1 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h1><p>“线程池”旨在减少创建和销毁线程的频率，其维持一定合理固定数量的线程，并让空闲的线程重新承担新的执行任务。“连接池”维持连接的缓存池，基本架构是有一个loop用来accept连接，之后把这个连接分配给线程池中的某个线程，处理完了以后这个线程又可以处理别的连接。尽量重用已有的连接、减少创建和关闭连接的频率。这两种技术都可以很好的降低系统开销，都被广泛应用很多大型系统，如 websphere、tomcat 和各种数据库等。</p>
 <p>但是，“线程池”和“连接池”技术也只是在一定程度上缓解了频繁调用 IO 接口带来的资源占用。而且，所谓“池”始终有其上限，当请求大大超过上限时，假如有n个线程，当现成调用read，天知道对方什么时候发来新的数据，于是这个线程就被这个read给阻塞住了（因为默认情况下fd是blocking的，即如果这个fd上没有数据，调用read会阻塞住进程），什么都不能干，第(n+1)个长连接来了，还是无法处理。“池”构成的系统对外界的响应并不比没有池的时候效果好多少。所以使用“池”必须考虑其面临的响应规模，并根据响应规模调整“池”的大小。</p>
 <p>对应上例中的所面临的可能同时出现的上千甚至上万次的客户端请求，“线程池”或“连接池”或许可以缓解部分压力，但是不能解决所有问题。</p>
 <p>总之，多线程模型可以方便高效的解决小规模的服务请求，但面对大规模的服务请求，多线程模型并不是最佳方案。下来我将讨论用非阻塞接口来尝试解决这个问题。</p>
-<p>#非阻塞服务器程序</p>
-<p>以上面临的很多问题，一定程度是IO接口的阻塞特性导致的。多线程是一个解决方案，还一个方案就是使用非阻塞的接口。</p>
+<h1 id="非阻塞服务器程序"><a href="#非阻塞服务器程序" class="headerlink" title="非阻塞服务器程序"></a>非阻塞服务器程序</h1><p>以上面临的很多问题，一定程度是IO接口的阻塞特性导致的。多线程是一个解决方案，还一个方案就是使用非阻塞的接口。</p>
 <p>非阻塞的接口相比于阻塞型接口的显著差异在于，在被调用之后立即返回。也就是说，当进程把一个套接字设置成非阻塞是在通知内核：当所请求的I/O操作非得把本进程投入睡眠才能完成时，不要把本进程投入睡眠，而是返回一个错误 eg. EWOULDBLOCK (UNP)<br>使用如下的函数可以将某句柄 fd 设为非阻塞状态。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">fcntl( fd, F_SETFL, O_NONBLOCK );</div></pre></td></tr></table></figure></p>
 <p>下面将给出只用一个线程，但能够同时从多个连接中检测数据是否送达，并且接受数据。<br><img src="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image003.jpg" alt="此处输入图片的描述"><br>在非阻塞状态下，recv() 接口在被调用后立即返回，返回值代表了不同的含义。如在本例中，</p>
 <ul>
@@ -355,8 +240,7 @@
 <p>可以看到服务器线程可以通过循环调用recv()接口，可以在单个线程内实现对所有连接的数据接收工作。</p>
 <p>但是上述模型绝不被推荐。因为，循环调用recv()将大幅度推高CPU占用率；此外，在这个方案中，recv() 更多的是起到检测“操作是否完成”的作用，由于服务器并不知道什么时候fd1,fd2,fd3的缓冲区上会有数据，所以就忙轮询，这样很耗费cpu的。所以需要一种预先告知内核准备就绪的能力，当内核一旦发现进程指定的一个或多个IO条件就绪，他就通知进程可以在套接字上读取或写入更多数据了，这个能力叫做<code>多路IO复用</code>.</p>
 <p>操作系统提供了更为高效的检测“操作是否完成”作用的接口，例如select()/poll()/epoll()/dev/poll / kqueue / libv等。</p>
-<p>#使用select()接口的基于事件驱动的服务器模型</p>
-<p>大部分Linux都支持Select函数，该函数用于探测多个文件句柄的状态变化。Manural上是这么描述的:</p>
+<h1 id="使用select-接口的基于事件驱动的服务器模型"><a href="#使用select-接口的基于事件驱动的服务器模型" class="headerlink" title="使用select()接口的基于事件驱动的服务器模型"></a>使用select()接口的基于事件驱动的服务器模型</h1><p>大部分Linux都支持Select函数，该函数用于探测多个文件句柄的状态变化。Manural上是这么描述的:</p>
 <blockquote>
 <p>select() and pselect() allow a program to monitor multiple file descriptors, waiting until one or more of the file descriptors become “ready” for some class of I/O operation (e.g., input possible). A file descriptor is considered ready if it is possible to perform the corre‐sponding I/O operation (e.g., read(2)) without blocking.</p>
 </blockquote>
@@ -374,19 +258,19 @@
 <p>但这个模型依旧有着很多问题。</p>
 <p>首先，select() 接口并不是实现“事件驱动”的最好选择。因为当需要探测的句柄值较大时，SELECT() 接口本身需要消耗大量时间去轮询各个句柄。很多操作系统提供了更为高效的接口，如 linux 提供了 epoll，BSD提供了kqueue，Solaris提供了/dev/poll…。如果需要实现更高效的服务器程序，类似 epoll 这样的接口更被推荐。遗憾的是不同的操作系统特供的epoll接口有很大差异，所以使用类似于 epoll 的接口实现具有较好跨平台能力的服务器会比较困难。</p>
 <p>其次，该模型将事件探测和事件响应夹杂在一起，在select轮询过程中，发现一个fd准备就绪，立马开始对事件的响应，响应结束才开始查询下一个fd是否可用，一旦事件响应的执行体庞大，则对整个模型是灾难性的。如下例，庞大的执行体1的将直接导致响应事件2的执行体迟迟得不到执行，并在很大程度上降低了事件探测的及时性.<br><img src="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image007.jpg" alt="此处输入图片的描述"></p>
-<p>#epoll<br>在实际应用中，select/poll监视的文件描述符可能会非常多，如果每次只是返回一小部分，那么，这种情况下select/poll显得不够高效。</p>
+<h1 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h1><p>在实际应用中，select/poll监视的文件描述符可能会非常多，如果每次只是返回一小部分，那么，这种情况下select/poll显得不够高效。</p>
 <ul>
 <li>select (2) 可以一次监视多达 FD_SETSIZE 的描述符数量, 通常是在 libc 编译时确定。</li>
 <li>poll (2) 它没有固定的一次监视描述符限制, 但我们必须对所有传递的描述符进行线性扫描, 每次检查就绪通知, 需要 o (n) 这个过程慢。</li>
 </ul>
 <p>针对select的这些缺陷，在linux中提出了epoll，epoll没有这样的固定限制,也不执行任何线性扫描。因此,它能够更好地执行并处理更多的事件。epoll的接口非常简单，一共就三个函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">int epoll_create(int size);</div><div class="line">int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);</div><div class="line">int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);</div></pre></td></tr></table></figure></p>
 <p>epoll 实例由 epoll_create (2) 或 epoll_create1 (2) (它们采用不同的参数) 创建, 返回一个 epoll 实例。epoll_ctl (2) 用于添加/删除 epoll 实例上要监视的描述符。要等待监视集上的事件, 使用 epoll_wait (2), 直到事件可用为止。</p>
-<p>##epoll模型<br>EPOLL事件有两种模型 Level Triggered (LT) 和 Edge Triggered (ET)：</p>
+<h2 id="epoll模型"><a href="#epoll模型" class="headerlink" title="epoll模型"></a>epoll模型</h2><p>EPOLL事件有两种模型 Level Triggered (LT) 和 Edge Triggered (ET)：</p>
 <ul>
 <li>LT(level triggered，水平触发模式)是缺省的工作方式，并且同时支持 block 和 non-block socket。在这种做法中，内核告诉你一个文件描述符是否就绪了，然后你可以对这个就绪的fd进行IO操作。如果你不作任何操作，内核还是会继续通知你的，所以，这种模式编程出错误可能性要小一点。</li>
 <li>ET(edge-triggered，边缘触发模式)是高速工作方式，只支持no-block socket。在这种模式下，当描述符从未就绪变为就绪时，内核通过epoll告诉你。然后它会假设你知道文件描述符已经就绪，并且不会再为那个文件描述符发送更多的就绪通知，等到下次有新的数据进来的时候才会再次出发就绪事件。</li>
 </ul>
-<p>#epoll、select、poll比较<br>比如，对于200个连接的应用来说，每一个连接都需要等待数据，写入或读取，在准备就绪之前，这些连接维持200个等待队列。</p>
+<h1 id="epoll、select、poll比较"><a href="#epoll、select、poll比较" class="headerlink" title="epoll、select、poll比较"></a>epoll、select、poll比较</h1><p>比如，对于200个连接的应用来说，每一个连接都需要等待数据，写入或读取，在准备就绪之前，这些连接维持200个等待队列。</p>
 <ul>
 <li>使用select，每次在调用开始时，要把当前进程放入各个文件描述符的等待队列。在进程唤醒调用结束后，又把进程从各个等待队列中删除。相对的，epoll自身维持一个等待队列，进程只需要放入一个等待队列，完成后，也只需要从一个等待队列中删除。</li>
 <li>epollfd本身需要和每一个连接建立联系，这种联系只需要在连接accept之后建立一次就可以，联系取消也之在连接断开进行一次，epoll的监控是持续的，而select每次调用时要重复地从用户态读入参数，每次都需要将进程重新添加进每个fd的等待队列。</li>
@@ -400,263 +284,92 @@
   </div>
   
     
-    <div class="copyright">
-        <p><span>本文标题:</span><a  href="/2017/02/25/epoll/">epoll</a></p>
-        <p><span>文章作者:</span><a  href="/" title="访问 大牙苏 的个人博客">大牙苏</a></p>
-        <p><span>发布时间:</span>2017年02月25日 - 14时05分</p>
-        <p><span>最后更新:</span>2017年06月25日 - 16时39分</p>
-        <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/02/25/epoll/" title="epoll">http://zhoulei.github.io/2017/02/25/epoll/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://zhoulei.github.io/2017/02/25/epoll/　　作者: 大牙苏" title=""></span>
-        </p>
-        <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
-        </p>
-    </div>
-
-
-
 <nav id="article-nav">
   
   
-    <a  href="/2017/02/25/socket/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/02/25/socket/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">基本TCP套接字编程</div>
-      <strong class="article-nav-caption">></strong>
+      <strong class="article-nav-caption">&gt;</strong>
     </a>
   
 </nav>
 
-
   
 </article>
 
-    <div id="toc" class="toc-article">
-    <strong class="toc-title">文章目录</strong>
-    
-</div>
-<style>
-    .left-col .switch-btn {
-        display: none;
-    }
-    .left-col .switch-area {
-        display: none;
-    }
-</style>
-<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
-<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-<script>
-    var valueHide = "隐藏目录";
-    var valueShow = "显示目录";
-    if ($(".left-col").is(":hidden")) {
-        $("#tocButton").attr("value", valueShow);
-    }
-    $("#tocButton").click(function() {
-        if ($("#toc").is(":hidden")) {
-            $("#tocButton").attr("value", valueHide);
-            $("#toc").slideDown(320);
-            $(".switch-btn, .switch-area").fadeOut(300);
-        }
-        else {
-            $("#tocButton").attr("value", valueShow);
-            $("#toc").slideUp(350);
-            $(".switch-btn, .switch-area").fadeIn(500);
-        }
-    })
-    if ($(".toc").length < 1) {
-        $("#toc, #tocButton").hide();
-        $(".switch-btn, .switch-area").show();
-    }
-</script>
 
-
-
-
-<div class="bdsharebuttonbox">
-	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
-	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
-	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
-	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
-	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
-	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
-</div>
-<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
-
-
-
-
-    
-        <section class="changyan" id="comments">
-  <!--<div id="uyan_frame"></div>-->
-  <div id="SOHUCS"></div>
-  <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js"></script>
-  <script type="text/javascript">
-    window.changyan.api.config({
-      appid: 'xxxx',
-      conf: 'xxxxxxxxx'
-    });
-  </script>
-</section>
-    
-
-
-
-    <div class="scroll" id="post-nav-button">
-        
-            <a  href="/" title="回到主页"><i class="fa fa-home"></i></a>
-        
-        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
-        
-            <a  href="/2017/02/25/socket/" title="下一篇: 基本TCP套接字编程">
-                <i class="fa fa-angle-right"></i>
-            </a>
-        
+<div class="ds-share share" data-thread-key="epoll" data-title="epoll" data-url="http://zhoulei.github.io/2017/02/25/epoll/"  data-images="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&amp;pid=15.1" data-content="epoll">
+    <div class="ds-share-inline">
+      <ul  class="ds-share-icons-16">
+      	<li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+        <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+        <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+        <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+        <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+      </ul>
+      <div class="ds-share-icons-more">
+      </div>
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/epoll/">epoll</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/socket/">基本TCP套接字编程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/01/WebServer/">Web Server</a></li></ul>
-    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-    <script>
-        $(".post-list").addClass("toc-article");
-        // $(".post-list-item a").attr("target","_blank");
-        $("#post-nav-button > a:nth-child(2)").click(function() {
-            $(".fa-bars, .fa-times").toggle();
-            $(".post-list").toggle(300);
-            if ($(".toc").length > 0) {
-                $("#toc, #tocButton").toggle(200, function() {
-                    if ($(".switch-area").is(":visible")) {
-                        $("#toc, .switch-btn, .switch-area").toggle();
-                        $("#tocButton").attr("value", valueHide);
-                        }
-                    })
-            }
-            else {
-                $(".switch-btn, .switch-area").fadeToggle(300);
-            }
-        })
-    </script>
+ </div>
+ 
 
 
 
 
-    <script>
-        
-    </script>
 
 </div>
       <footer id="footer">
-    <div class="outer">
-        <div id="footer-info">
-            <div class="footer-left">
-                &copy; 2017 大牙苏
-            </div>
-            <div class="footer-right">
-                <a href="http://hexo.io/" target="_blank">Hexo</a><a href="https://github.com/maochunguang" target="_blank">Blog</a> by tommy
-            </div>
+  <div class="outer">
+    <div id="footer-info">
+      <div class="footer-left">
+        &copy; 2017 大牙苏
+      </div>
+        <div class="footer-right">
+          <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/smackgg/hexo-theme-smackdown" target="_blank">Smackdown</a>
         </div>
-        
-            <div class="visit">
-                
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >极客到访数: 
-                            <span id="busuanzi_value_site_uv"></span>
-                        </span>
-                    </span>
-                
-                
-                    <span>, </span>
-                
-                
-                    <span id="busuanzi_container_page_pv" style='display:none'>
-                        <span id="page-visit">本页阅读量: 
-                            <span id="busuanzi_value_page_pv"></span>
-                        </span>
-                    </span>
-                
-            </div>
-        
     </div>
+  </div>
 </footer>
-
     </div>
-    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
 <script src="/js/main.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            var backgroundnum = 4;
-            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
-            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
-            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
-        })
-    </script>
 
 
-<!-- Google Analytics -->
-<script type="text/javascript">
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
 
-ga('create', 'xxxxx', 'auto');
-ga('send', 'pageview');
-
-</script>
-<!-- End Google Analytics -->
-
-
-
-	<script>
-	var _hmt = _hmt || [];
-	(function() {
-	  var hm = document.createElement("script");
-	  hm.src = "//hm.baidu.com/hm.js?xxxxxx";
-	  var s = document.getElementsByTagName("script")[0]; 
-	  s.parentNode.insertBefore(hm, s);
-	})();
-	</script>
-
-
-
-<div class="scroll" id="scroll">
-    <a href="#"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
-</div>
-<script>
-    $(document).ready(function() {
-        if ($("#comments").length < 1) {
-            $("#scroll > a:nth-child(2)").hide();
-        };
-    })
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
 </script>
 
-<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
-
-  <script language="javascript">
-    $(function() {
-        $("a[title]").each(function() {
-            var a = $(this);
-            var title = a.attr('title');
-            if (title == undefined || title == "") return;
-            a.data('title', title).removeAttr('title').hover(
-            function() {
-                var offset = a.offset();
-                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
-                    top: offset.top - a.outerHeight() - 15,
-                    left: offset.left + a.outerWidth()/2 + 1
-                }).fadeIn(function() {
-                    var pop = $(this);
-                    setTimeout(function() {
-                        pop.remove();
-                    }, pop.text().length * 800);
-                });
-            }, function() {
-                $("#anchortitlecontainer").remove();
-            });
-        });
-    });
-</script>
+<script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js"></script>
 
 
   </div>

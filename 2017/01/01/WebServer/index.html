@@ -2,285 +2,168 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="baidu-site-verification" content="L6Lm9d5Crl"/>
-  
-  
-  
   
   <title>Web Server | 暗时间</title>
+
+  <!-- keywords -->
+  
+
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="#Tiny Web服务器进程控制，unixI/O，套接字接口，HTTP客户和Tiny服务器建立连接，向服务器发送http请求，服务器解析http请求，发送响应内容给客户。 ##main分析Tiny是一个迭代服务器，解析配置文件中的端口值，调用Open_listenfd()函数打开一个监听套接字，然后Tiny执行无限循环：服务器阻塞在accept，等待监听描述符listenfd上的连接请求，当服务">
+  <meta name="description" content="Tiny Web服务器进程控制，unixI/O，套接字接口，HTTP客户和Tiny服务器建立连接，向服务器发送http请求，服务器解析http请求，发送响应内容给客户。 main分析Tiny是一个迭代服务器，解析配置文件中的端口值，调用Open_listenfd()函数打开一个监听套接字，然后Tiny执行无限循环：服务器阻塞在accept，等待监听描述符listenfd上的连接请求，当服务器从a">
 <meta name="keywords" content="网络编程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Web Server">
 <meta property="og:url" content="http://zhoulei.github.io/2017/01/01/WebServer/index.html">
 <meta property="og:site_name" content="暗时间">
-<meta property="og:description" content="#Tiny Web服务器进程控制，unixI/O，套接字接口，HTTP客户和Tiny服务器建立连接，向服务器发送http请求，服务器解析http请求，发送响应内容给客户。 ##main分析Tiny是一个迭代服务器，解析配置文件中的端口值，调用Open_listenfd()函数打开一个监听套接字，然后Tiny执行无限循环：服务器阻塞在accept，等待监听描述符listenfd上的连接请求，当服务">
-<meta property="og:updated_time" content="2017-06-25T08:39:54.503Z">
+<meta property="og:description" content="Tiny Web服务器进程控制，unixI/O，套接字接口，HTTP客户和Tiny服务器建立连接，向服务器发送http请求，服务器解析http请求，发送响应内容给客户。 main分析Tiny是一个迭代服务器，解析配置文件中的端口值，调用Open_listenfd()函数打开一个监听套接字，然后Tiny执行无限循环：服务器阻塞在accept，等待监听描述符listenfd上的连接请求，当服务器从a">
+<meta property="og:updated_time" content="2017-06-25T09:05:48.722Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Web Server">
-<meta name="twitter:description" content="#Tiny Web服务器进程控制，unixI/O，套接字接口，HTTP客户和Tiny服务器建立连接，向服务器发送http请求，服务器解析http请求，发送响应内容给客户。 ##main分析Tiny是一个迭代服务器，解析配置文件中的端口值，调用Open_listenfd()函数打开一个监听套接字，然后Tiny执行无限循环：服务器阻塞在accept，等待监听描述符listenfd上的连接请求，当服务">
+<meta name="twitter:description" content="Tiny Web服务器进程控制，unixI/O，套接字接口，HTTP客户和Tiny服务器建立连接，向服务器发送http请求，服务器解析http请求，发送响应内容给客户。 main分析Tiny是一个迭代服务器，解析配置文件中的端口值，调用Open_listenfd()函数打开一个监听套接字，然后Tiny执行无限循环：服务器阻塞在accept，等待监听描述符listenfd上的连接请求，当服务器从a">
   
     <link rel="alternative" href="/atom.xml" title="暗时间" type="application/atom+xml">
   
   
-    <link rel="icon" href="/img/favicon.png">
-  
-  
-  <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+    <link rel="icon" href="http://7xkj1z.com1.z0.glb.clouddn.com/head.jpg">
   
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   
   
-      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  <script src="//cdn.bootcss.com/require.js/2.3.2/require.min.js"></script>
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+
   
-  <!-- 加载特效 -->
-    <script src="/js/pace.js"></script>
-    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
-  <script>
-      var yiliaConfig = {
-          fancybox: true,
-          animate: true,
-          isHome: false,
-          isPost: true,
-          isArchive: false,
-          isTag: false,
-          isCategory: false,
-          open_in_new: false
-      }
-  </script>
 </head>
 <body>
   <div id="container">
+    <div id="particles-js"></div>
     <div class="left-col">
     <div class="overlay"></div>
 <div class="intrude-less">
-    <header id="header" class="inner">
-        <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-        <a href="/" class="profilepic">
-            
-            <img lazy-src="/img/avatar.png" class="js-avatar">
-            
-        </a>
-        <hgroup>
-          <h1 class="header-author"><a href="/">大牙苏</a></h1>
-        </hgroup>
-        
-        <p class="header-subtitle">书写是最好的思考</p>
-        
-        
-            <form>
-                <input type="text" class="st-default-search-input search" id="local-search-input" placeholder=" Search...">
-            </form>
-            <div id="local-search-result"></div>
-        
-        
-            <script type="text/javascript">
-                (function() {
-                    'use strict';
-                    function getMatchData(keyword, data) {
-                        var matchData = [];
-                        for(var i =0;i<data.length;i++){
-                            if(data[i].title.toLowerCase().indexOf(keyword)>=0) 
-                                matchData.push(data[i])
-                        }
-                        return matchData;
-                    }
-                    var $input = $('#local-search-input');
-                    var $resultContent = $('#local-search-result');
-                    $input.keyup(function(){
-                        $.ajax({
-                            url: '/search.json',
-                            dataType: "json",
-                            success: function( json ) {
-                                var str='<ul class=\"search-result-list\">';                
-                                var keyword = $input.val().trim().toLowerCase();
-                                $resultContent.innerHTML = "";
-                                if ($input.val().trim().length <= 0) {
-                                    $resultContent.empty();
-                                    $('#switch-area').show();
-                                    return;
-                                }
-                                var results = getMatchData(keyword, json);
-                                if(results.length === 0){
-                                    $resultContent.empty();
-                                    $('#switch-area').show();
-                                    return;
-                                } 
-                                for(var i =0; i<results.length; i++){
-                                    str += "<li><a href='"+ results[i].url +"' class='search-result-title'>"+ results[i].title +"</a></li>";
-                                }
-                                str += "</ul>";
-                                $resultContent.empty();
-                                $resultContent.append(str);
-                                $('#switch-area').hide();
-                            }
-                        });
-                    });
-                })();
-            </script>
-        
-        
-            <div id="switch-btn" class="switch-btn">
-                <div class="icon">
-                    <div class="icon-ctn">
-                        <div class="icon-wrap icon-house" data-idx="0">
-                            <div class="birdhouse"></div>
-                            <div class="birdhouse_holes"></div>
-                        </div>
-                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
-                            <div class="ribbon"></div>
-                        </div>
-                        
-                        <div class="icon-wrap icon-link hide" data-idx="2">
-                            <div class="loopback_l"></div>
-                            <div class="loopback_r"></div>
-                        </div>
-                        
-                        
-                        <div class="icon-wrap icon-me hide" data-idx="3">
-                            <div class="user"></div>
-                            <div class="shoulder"></div>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div class="tips-box hide">
-                    <div class="tips-arrow"></div>
-                    <ul class="tips-inner">
-                        <li>菜单</li>
-                        <li>标签</li>
-                        
-                        <li>友情链接</li>
-                        
-                        
-                        <li>关于我</li>
-                        
-                    </ul>
-                </div>
-            </div>
-        
-        <div id="switch-area" class="switch-area">
-            <div class="switch-wrap">
-                <section class="switch-part switch-part1">
-                    <nav class="header-menu">
-                        <ul>
-                        
-                            <li><a  href="/archives/">所有文章</a></li>
-                        
-                            <li><a  href="/categories/开发工具/">玩转开发工具</a></li>
-                        
-                            <li><a  href="/categories/digital">玩转数码</a></li>
-                        
-                            <li><a  href="/categories/cognition">认知提升</a></li>
-                        
-                            <li><a  href="/about/">关于我</a></li>
-                        
-                        </ul>
-                    </nav>
-                    <nav class="header-nav">
-                        <ul class="social">
-                            
-                                <a class="fl github"  target="_blank" href="/xxxxx" title="github">github</a>
-                            
-                                <a class="fl weibo"  target="_blank" href="/xxxxxxxx" title="weibo">weibo</a>
-                            
-                                <a class="fl rss"  target="_blank" href="/atom.xml" title="rss">rss</a>
-                            
-                        </ul>
-                    </nav>
-                </section>
-                
-                <section class="switch-part switch-part2">
-                    <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/网络编程/" style="font-size: 10px;">网络编程</a>
-                    </div>
-                </section>
-                
-                
-                <section class="switch-part switch-part3">
-                    <div id="js-friends">
-                    
-                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://blog.csdn.net/baidu_21483933">csdn</a>
-                    
-                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://segmentfault.com/blog/maocg_web">segmentfault</a>
-                    
-                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.jianshu.com/users/eb37ef89c746/latest_articles">简书</a>
-                    
-                    </div>
-                </section>
-                
-                
-                
-                <section class="switch-part switch-part4">
-                
-                    <div id="js-aboutme">爱动漫,爱游戏,爱编程,爱运动,爱的太多了!</div>
-                </section>
-                
-            </div>
-        </div>
-    </header>
-</div>
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&amp;pid=15.1" class="js-avatar">
+			
+		</a>
 
+		<hgroup>
+		  <h1 class="header-author"><a href="/">大牙苏</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">书写是最好的思考</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/zhouleian/" title="github">github</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/tcp-ip/" style="font-size: 10px;">tcp/ip</a> <a href="/tags/网络编程/" style="font-size: 20px;">网络编程</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
     </div>
     <div class="mid-col">
       <nav id="mobile-nav">
-      <div class="overlay">
-          <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">大牙苏</a></h1>
-      </div>
-    <div class="intrude-less">
-        <header id="header" class="inner">
-            <a href="/" class="profilepic">
-                
-                    <img lazy-src="/img/avatar.png" class="js-avatar">
-                
-            </a>
-            <hgroup>
-              <h1 class="header-author"><a href="/" title="回到主页">大牙苏</a></h1>
-            </hgroup>
-            
-            <p class="header-subtitle">书写是最好的思考</p>
-            
-            <nav class="header-menu">
-                <ul>
-                
-                    <li><a href="/archives/">所有文章</a></li>
-                
-                    <li><a href="/categories/开发工具/">玩转开发工具</a></li>
-                
-                    <li><a href="/categories/digital">玩转数码</a></li>
-                
-                    <li><a href="/categories/cognition">认知提升</a></li>
-                
-                    <li><a href="/about/">关于我</a></li>
-                
-                <div class="clearfix"></div>
-                </ul>
-            </nav>
-            <nav class="header-nav">
-                <div class="social">
-                    
-                        <a class="github" target="_blank" href="/xxxxx" title="github">github</a>
-                    
-                        <a class="weibo" target="_blank" href="/xxxxxxxx" title="weibo">weibo</a>
-                    
-                        <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-                    
-                </div>
-            </nav>
-        </header>                
-    </div>
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">大牙苏</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&amp;pid=15.1" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">大牙苏</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">书写是最好的思考</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/zhouleian/" title="github">github</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
 </nav>
       <div class="body-wrap"><article id="post-WebServer" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a  href="/2017/01/01/WebServer/" class="article-date">
-      <time datetime="2017-01-01T12:46:25.000Z" itemprop="datePublished">2017-01-01</time>
+      <a href="/2017/01/01/WebServer/" class="article-date">
+  	<time datetime="2017-01-01T12:46:25.000Z" itemprop="datePublished">2017-01-01</time>
 </a>
-
     </div>
   
   <div class="article-inner">
@@ -293,41 +176,39 @@
   
     <h1 class="article-title" itemprop="name">
       Web Server
+      
     </h1>
   
-
 
       </header>
       
       <div class="article-info article-info-post">
         
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/网络编程/">网络编程</a></li></ul>
+	</div>
 
         
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/网络编程/">网络编程</a></li></ul>
-    </div>
 
+        
         <div class="clearfix"></div>
       </div>
       
     
     <div class="article-entry" itemprop="articleBody">
       
-          
         <hr>
-<p>#Tiny Web服务器<br>进程控制，unixI/O，套接字接口，HTTP<br>客户和Tiny服务器建立连接，向服务器发送http请求，服务器解析http请求，发送响应内容给客户。</p>
-<p>##main分析<br>Tiny是一个迭代服务器，解析配置文件中的端口值，调用Open_listenfd()函数打开一个监听套接字，然后Tiny执行无限循环：服务器阻塞在accept，等待监听描述符listenfd上的连接请求，当服务器从accept返回connfd，表明已经与客户端建立起了连接，执行事务，并关闭连接它的那一端，进行下一次循环。</p>
-<p>##客户的HTTP请求<br>先了解一下HTTP请求的组成。一个HTTP请求是由一个请求行，后面跟随零个或者更多个请求报头，再跟随一个空的文本行来终止报头列表。<br>　　HTTP请求行的格式如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;method&gt;&lt;uri&gt;&lt;version&gt;</div><div class="line">例如：GET&lt;空格&gt;/index.html&lt;空格&gt;HTTP/1.1</div><div class="line">GET方法请求index.html的内容，uri：/index.html&lt;空格&gt;HTTP/1.1</div></pre></td></tr></table></figure></p>
+<h1 id="Tiny-Web服务器"><a href="#Tiny-Web服务器" class="headerlink" title="Tiny Web服务器"></a>Tiny Web服务器</h1><p>进程控制，unixI/O，套接字接口，HTTP<br>客户和Tiny服务器建立连接，向服务器发送http请求，服务器解析http请求，发送响应内容给客户。</p>
+<h2 id="main分析"><a href="#main分析" class="headerlink" title="main分析"></a>main分析</h2><p>Tiny是一个迭代服务器，解析配置文件中的端口值，调用Open_listenfd()函数打开一个监听套接字，然后Tiny执行无限循环：服务器阻塞在accept，等待监听描述符listenfd上的连接请求，当服务器从accept返回connfd，表明已经与客户端建立起了连接，执行事务，并关闭连接它的那一端，进行下一次循环。</p>
+<h2 id="客户的HTTP请求"><a href="#客户的HTTP请求" class="headerlink" title="客户的HTTP请求"></a>客户的HTTP请求</h2><p>先了解一下HTTP请求的组成。一个HTTP请求是由一个请求行，后面跟随零个或者更多个请求报头，再跟随一个空的文本行来终止报头列表。<br>　　HTTP请求行的格式如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;method&gt;&lt;uri&gt;&lt;version&gt;</div><div class="line">例如：GET&lt;空格&gt;/index.html&lt;空格&gt;HTTP/1.1</div><div class="line">GET方法请求index.html的内容，uri：/index.html&lt;空格&gt;HTTP/1.1</div></pre></td></tr></table></figure></p>
 <p>　　HTTP支持许多的方法，包括GET、POST、OPTIONS、HEAD、PUT、DELETE和TRACE。Tiny支持GET，POST，HEAD方法，指导服务器生成和返回URI标识的内容。如果客户请求的是其他的方法,服务器返回一个错误信息，并返回到主程序，主程序随后关闭连接并等待下一个连接请求，否则，服务器读取HTTP请求。<br>　　URI是URL的后缀，包括文件名和参数。版本字段表明了该请求遵循的HTTP版本，有HTTP/1.0和HTTP/1.1。<br>　　读取并解析请求行,代码中使用Worker_readlineb()从fd读取一行数据到buf，代码中用了一个request的结构，根据这个结构中的buf中的内容，解析method,uri和version。<br>　　<br>　　从请求中提取URI信息，使用parse_uri()来从URI中提取文件名和请求参数cgi字符串，并返回值标识静态内容或者动态内容。使用stat()获取文件的状态并将状态保存到sbuf中，执行成功返回0，如果执行失败则会返回-1表示该文件在磁盘上不存在。<br>　　<br>　　如果请求的是静态内容，需要验证该文件是一般文件(st_mode == S_ISREG)并且我们有读权限。如果是我们就向客户端提供静态内容。相似的如果请求的是动态内容，需要验证该文件是可执行文件，如果是我们就向客户端提供动态内容。<br>　　 注意：终止请求行的是请求行后面的一行空文本行，由回车和换行符对组成的。</p>
-<p>##解析uri</p>
-<p>　　parse_uri()将URI解析为一个文件名和一个可选的CGI参数字符串。如果是静态内容，我们将清除CGI参数串(即将cgiargs置空)，然后将URI转换为一个相对的UNIX路径名，例如./index.html。如果URI是以/结尾的则要在后面添加默认文件名index.html。如果是动态内容，URI中的文件名和CGI参数是以?分割，以此可以抽出CGI参数和文件名。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GET /cgi-bin/adder?15&amp;12 HTTP/1.1</div><div class="line">这是一个请求动态内容的请求行，uri的？前是文件名，后是cgi参数</div></pre></td></tr></table></figure></p>
-<p>##HTTP响应<br>　　HTTP响应和HTTP请求是相似的。一个HTTP响应的组成有：一个响应行，后面跟随零个或者更多的响应报头，再跟随一个终止报头的空行，再跟随响应主体。响应行的格式是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;version&gt;&lt;status code&gt;&lt;status message&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="解析uri"><a href="#解析uri" class="headerlink" title="解析uri"></a>解析uri</h2><p>　　parse_uri()将URI解析为一个文件名和一个可选的CGI参数字符串。如果是静态内容，我们将清除CGI参数串(即将cgiargs置空)，然后将URI转换为一个相对的UNIX路径名，例如./index.html。如果URI是以/结尾的则要在后面添加默认文件名index.html。如果是动态内容，URI中的文件名和CGI参数是以?分割，以此可以抽出CGI参数和文件名。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GET /cgi-bin/adder?15&amp;12 HTTP/1.1</div><div class="line">这是一个请求动态内容的请求行，uri的？前是文件名，后是cgi参数</div></pre></td></tr></table></figure></p>
+<h2 id="HTTP响应"><a href="#HTTP响应" class="headerlink" title="HTTP响应"></a>HTTP响应</h2><p>　　HTTP响应和HTTP请求是相似的。一个HTTP响应的组成有：一个响应行，后面跟随零个或者更多的响应报头，再跟随一个终止报头的空行，再跟随响应主体。响应行的格式是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;version&gt;&lt;status code&gt;&lt;status message&gt;</div></pre></td></tr></table></figure></p>
 <p>　　版本字段描述了响应所遵循的HTTP版本。状态码是一个三位的正整数，指明对请求的处理。状态消息给出与错误代码等价的英文描述。<br>　　do_error()发送一个HTTP响应报文个给客户端，在响应行中包含状态码和状态消息，响应主体包含一个HTML文件，来向用户解释错误。
 　　</p>
-<p>##服务静态内容<br>　　Tiny提供不同类型的静态内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">　　mime_type_t tiny_mime[] = &#123;</div><div class="line">	&#123;&quot;.html&quot;, &quot;text/html&quot;&#125;,</div><div class="line">	&#123;&quot;.xml&quot;, &quot;text/xml&quot;&#125;,</div><div class="line">	&#123;&quot;.xhtml&quot;, &quot;application/xhtml+xml&quot;&#125;,</div><div class="line">	&#123;&quot;.txt&quot;, &quot;text/plain&quot;&#125;,</div><div class="line">	&#123;&quot;.rtf&quot;, &quot;application/rtf&quot;&#125;,</div><div class="line">	&#123;&quot;.pdf&quot;, &quot;application/pdf&quot;&#125;,</div><div class="line">	&#123;&quot;.word&quot;, &quot;application/msword&quot;&#125;,</div><div class="line">	&#123;&quot;.png&quot;, &quot;image/png&quot;&#125;,</div><div class="line">	&#123;&quot;.gif&quot;, &quot;image/gif&quot;&#125;,</div><div class="line">	&#123;&quot;.jpg&quot;, &quot;image/jpeg&quot;&#125;,</div><div class="line">	&#123;&quot;.jpeg&quot;, &quot;image/jpeg&quot;&#125;,</div><div class="line">	&#123;&quot;.au&quot;, &quot;audio/basic&quot;&#125;,</div><div class="line">	&#123;&quot;.mpeg&quot;, &quot;video/mpeg&quot;&#125;,</div><div class="line">	&#123;&quot;.mpg&quot;, &quot;video/mpeg&quot;&#125;,</div><div class="line">	&#123;&quot;.avi&quot;, &quot;video/x-msvideo&quot;&#125;,</div><div class="line">	&#123;&quot;.gz&quot;, &quot;application/x-gzip&quot;&#125;,</div><div class="line">	&#123;&quot;.tar&quot;, &quot;application/x-tar&quot;&#125;,</div><div class="line">	&#123;&quot;.css&quot;, &quot;text/css&quot;&#125;,</div><div class="line">	&#123;NULL ,&quot;text/plain&quot;&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<h2 id="服务静态内容"><a href="#服务静态内容" class="headerlink" title="服务静态内容"></a>服务静态内容</h2><p>　　Tiny提供不同类型的静态内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">　　mime_type_t tiny_mime[] = &#123;</div><div class="line">	&#123;&quot;.html&quot;, &quot;text/html&quot;&#125;,</div><div class="line">	&#123;&quot;.xml&quot;, &quot;text/xml&quot;&#125;,</div><div class="line">	&#123;&quot;.xhtml&quot;, &quot;application/xhtml+xml&quot;&#125;,</div><div class="line">	&#123;&quot;.txt&quot;, &quot;text/plain&quot;&#125;,</div><div class="line">	&#123;&quot;.rtf&quot;, &quot;application/rtf&quot;&#125;,</div><div class="line">	&#123;&quot;.pdf&quot;, &quot;application/pdf&quot;&#125;,</div><div class="line">	&#123;&quot;.word&quot;, &quot;application/msword&quot;&#125;,</div><div class="line">	&#123;&quot;.png&quot;, &quot;image/png&quot;&#125;,</div><div class="line">	&#123;&quot;.gif&quot;, &quot;image/gif&quot;&#125;,</div><div class="line">	&#123;&quot;.jpg&quot;, &quot;image/jpeg&quot;&#125;,</div><div class="line">	&#123;&quot;.jpeg&quot;, &quot;image/jpeg&quot;&#125;,</div><div class="line">	&#123;&quot;.au&quot;, &quot;audio/basic&quot;&#125;,</div><div class="line">	&#123;&quot;.mpeg&quot;, &quot;video/mpeg&quot;&#125;,</div><div class="line">	&#123;&quot;.mpg&quot;, &quot;video/mpeg&quot;&#125;,</div><div class="line">	&#123;&quot;.avi&quot;, &quot;video/x-msvideo&quot;&#125;,</div><div class="line">	&#123;&quot;.gz&quot;, &quot;application/x-gzip&quot;&#125;,</div><div class="line">	&#123;&quot;.tar&quot;, &quot;application/x-tar&quot;&#125;,</div><div class="line">	&#123;&quot;.css&quot;, &quot;text/css&quot;&#125;,</div><div class="line">	&#123;NULL ,&quot;text/plain&quot;&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
 <p>　　serve_static()函数发送一个HTTP响应，响应的主体包括一个本地文件的内容。首先，我们检查文件名的后缀来判断文件类型，并在响应报头的Content-type字段中显示出来。随后我们发送响应行和响应报头给客户端，用一个空行来终止报头。<br>　　<br>　　对静态内容的请求是通过从服务器磁盘取得文件并把它返回给客户端的。然后我们以只读的方式打开所请求的文件获得文件句柄（描述符）srcfd，并用<code>mmap函数将请求文件映射到虚拟存储器空间</code>，代码中是将srcfd指向的文件的前filesize个字节映射到一个地址从srcp开始的只读私有虚拟存储器区域。<br>　　一旦映射到存储器成功，我们就不再需要文件句柄了，可以通过srcp来操作文件，所以我们关闭srcfd。<br>　　然后我们使用Worker_writen()将srcp的内容传送到客户端fd。这时静态内容的处理操作已经完成了，释放srcp的映射的虚拟存储区域，这对于避免潜在的致命的存储器泄漏很重要。</p>
-<p>##服务动态内容</p>
-<p>　　服务动态内容有四个问题：客户端如何将程序参数传递给服务器？服务器如何将这些参数传递给它所创建的子进程？服务器如何将子进程生成内容所需要的其他信息传递给子进程？子进程将它的输出发送到哪里？<br>　　1. 客户端如何将程序参数传递给服务器？<br>　  GET请求的参数在URI中传递，URI中？前是文件名，后是cgi参数，每个参数用&amp;分割开，参数中不允许有空格，必须用%20来替代。</p>
+<h2 id="服务动态内容"><a href="#服务动态内容" class="headerlink" title="服务动态内容"></a>服务动态内容</h2><p>　　服务动态内容有四个问题：客户端如何将程序参数传递给服务器？服务器如何将这些参数传递给它所创建的子进程？服务器如何将子进程生成内容所需要的其他信息传递给子进程？子进程将它的输出发送到哪里？<br>　　1. 客户端如何将程序参数传递给服务器？<br>　  GET请求的参数在URI中传递，URI中？前是文件名，后是cgi参数，每个参数用&amp;分割开，参数中不允许有空格，必须用%20来替代。</p>
 <p>　　2. 服务器如何将这些参数传递给它所创建的子进程？<br>　　GET /cgi-bin/adder?15&amp;12 HTTP/1.1  客户请求是执行adder程序，adder程序称为CGI程序，服务器在接收到这样的请求后，fork子进程，在子进程中利用getenv将CGI环境变量QUERY_STRING设置为uri传递的参数，调用execve执行程序。这里要注意：在CGI程序运行在子进程上下文中，它能够访问所有在调用execve函数之前就存在的打开文件和环境变量。</p>
 <p>　　3. 服务器如何将子进程生成内容所需要的其他信息传递给子进程？<br>　　其他信息是通过CGI中定义的其他变量来传递的。</p>
 <p>　　4. 子进程将它的输出发送到哪里？<br>　　CGI程序将它的动态内容发送到标准输出，在子进程加载并运行之前，通过dup2函数将标准输出重定向到和客户端相关连的connfd，这样CGI程序的写到标准输出的东西都会直接到达客户端。</p>
@@ -338,26 +219,10 @@
   </div>
   
     
-    <div class="copyright">
-        <p><span>本文标题:</span><a  href="/2017/01/01/WebServer/">Web Server</a></p>
-        <p><span>文章作者:</span><a  href="/" title="访问 大牙苏 的个人博客">大牙苏</a></p>
-        <p><span>发布时间:</span>2017年01月01日 - 20时46分</p>
-        <p><span>最后更新:</span>2017年06月25日 - 16时39分</p>
-        <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/01/01/WebServer/" title="Web Server">http://zhoulei.github.io/2017/01/01/WebServer/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://zhoulei.github.io/2017/01/01/WebServer/　　作者: 大牙苏" title=""></span>
-        </p>
-        <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
-        </p>
-    </div>
-
-
-
 <nav id="article-nav">
   
-    <a  href="/2017/02/25/socket/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
+    <a href="/2017/02/25/socket/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">&lt;</strong>
       <div class="article-nav-title">
         
           基本TCP套接字编程
@@ -368,237 +233,82 @@
   
 </nav>
 
-
   
 </article>
 
-    <div id="toc" class="toc-article">
-    <strong class="toc-title">文章目录</strong>
-    
-</div>
-<style>
-    .left-col .switch-btn {
-        display: none;
-    }
-    .left-col .switch-area {
-        display: none;
-    }
-</style>
-<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
-<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-<script>
-    var valueHide = "隐藏目录";
-    var valueShow = "显示目录";
-    if ($(".left-col").is(":hidden")) {
-        $("#tocButton").attr("value", valueShow);
-    }
-    $("#tocButton").click(function() {
-        if ($("#toc").is(":hidden")) {
-            $("#tocButton").attr("value", valueHide);
-            $("#toc").slideDown(320);
-            $(".switch-btn, .switch-area").fadeOut(300);
-        }
-        else {
-            $("#tocButton").attr("value", valueShow);
-            $("#toc").slideUp(350);
-            $(".switch-btn, .switch-area").fadeIn(500);
-        }
-    })
-    if ($(".toc").length < 1) {
-        $("#toc, #tocButton").hide();
-        $(".switch-btn, .switch-area").show();
-    }
-</script>
 
-
-
-
-<div class="bdsharebuttonbox">
-	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
-	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
-	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
-	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
-	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
-	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
-</div>
-<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
-
-
-
-
-    
-        <section class="changyan" id="comments">
-  <!--<div id="uyan_frame"></div>-->
-  <div id="SOHUCS"></div>
-  <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js"></script>
-  <script type="text/javascript">
-    window.changyan.api.config({
-      appid: 'xxxx',
-      conf: 'xxxxxxxxx'
-    });
-  </script>
-</section>
-    
-
-
-
-    <div class="scroll" id="post-nav-button">
-        
-            <a  href="/2017/02/25/socket/" title="上一篇: 基本TCP套接字编程">
-                <i class="fa fa-angle-left"></i>
-            </a>
-        
-        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
-        
-            <a  href="/" title="回到主页"><i class="fa fa-home"></i></a>
-        
+<div class="ds-share share" data-thread-key="WebServer" data-title="Web Server" data-url="http://zhoulei.github.io/2017/01/01/WebServer/"  data-images="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&amp;pid=15.1" data-content="Web Server">
+    <div class="ds-share-inline">
+      <ul  class="ds-share-icons-16">
+      	<li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+        <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+        <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+        <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+        <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+      </ul>
+      <div class="ds-share-icons-more">
+      </div>
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/epoll/">epoll</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/socket/">基本TCP套接字编程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/01/WebServer/">Web Server</a></li></ul>
-    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-    <script>
-        $(".post-list").addClass("toc-article");
-        // $(".post-list-item a").attr("target","_blank");
-        $("#post-nav-button > a:nth-child(2)").click(function() {
-            $(".fa-bars, .fa-times").toggle();
-            $(".post-list").toggle(300);
-            if ($(".toc").length > 0) {
-                $("#toc, #tocButton").toggle(200, function() {
-                    if ($(".switch-area").is(":visible")) {
-                        $("#toc, .switch-btn, .switch-area").toggle();
-                        $("#tocButton").attr("value", valueHide);
-                        }
-                    })
-            }
-            else {
-                $(".switch-btn, .switch-area").fadeToggle(300);
-            }
-        })
-    </script>
+ </div>
+ 
 
 
 
 
-    <script>
-        
-    </script>
 
 </div>
       <footer id="footer">
-    <div class="outer">
-        <div id="footer-info">
-            <div class="footer-left">
-                &copy; 2017 大牙苏
-            </div>
-            <div class="footer-right">
-                <a href="http://hexo.io/" target="_blank">Hexo</a><a href="https://github.com/maochunguang" target="_blank">Blog</a> by tommy
-            </div>
+  <div class="outer">
+    <div id="footer-info">
+      <div class="footer-left">
+        &copy; 2017 大牙苏
+      </div>
+        <div class="footer-right">
+          <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/smackgg/hexo-theme-smackdown" target="_blank">Smackdown</a>
         </div>
-        
-            <div class="visit">
-                
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >极客到访数: 
-                            <span id="busuanzi_value_site_uv"></span>
-                        </span>
-                    </span>
-                
-                
-                    <span>, </span>
-                
-                
-                    <span id="busuanzi_container_page_pv" style='display:none'>
-                        <span id="page-visit">本页阅读量: 
-                            <span id="busuanzi_value_page_pv"></span>
-                        </span>
-                    </span>
-                
-            </div>
-        
     </div>
+  </div>
 </footer>
-
     </div>
-    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
 <script src="/js/main.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            var backgroundnum = 4;
-            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
-            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
-            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
-        })
-    </script>
 
 
-<!-- Google Analytics -->
-<script type="text/javascript">
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
 
-ga('create', 'xxxxx', 'auto');
-ga('send', 'pageview');
-
-</script>
-<!-- End Google Analytics -->
-
-
-
-	<script>
-	var _hmt = _hmt || [];
-	(function() {
-	  var hm = document.createElement("script");
-	  hm.src = "//hm.baidu.com/hm.js?xxxxxx";
-	  var s = document.getElementsByTagName("script")[0]; 
-	  s.parentNode.insertBefore(hm, s);
-	})();
-	</script>
-
-
-
-<div class="scroll" id="scroll">
-    <a href="#"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
-</div>
-<script>
-    $(document).ready(function() {
-        if ($("#comments").length < 1) {
-            $("#scroll > a:nth-child(2)").hide();
-        };
-    })
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
 </script>
 
-<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
-
-  <script language="javascript">
-    $(function() {
-        $("a[title]").each(function() {
-            var a = $(this);
-            var title = a.attr('title');
-            if (title == undefined || title == "") return;
-            a.data('title', title).removeAttr('title').hover(
-            function() {
-                var offset = a.offset();
-                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
-                    top: offset.top - a.outerHeight() - 15,
-                    left: offset.left + a.outerWidth()/2 + 1
-                }).fadeIn(function() {
-                    var pop = $(this);
-                    setTimeout(function() {
-                        pop.remove();
-                    }, pop.text().length * 800);
-                });
-            }, function() {
-                $("#anchortitlecontainer").remove();
-            });
-        });
-    });
-</script>
+<script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js"></script>
 
 
   </div>
