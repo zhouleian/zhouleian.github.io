@@ -9,17 +9,17 @@
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="# TCP连接特殊情况 在WebServer HTTP服务器中，涉及到了对客户端突发的各种异常情况的处理，在这里总结一下。 端口不可达在连接建立以前的情况，产生RST复位的一种常见情况是，到不存在端口的连接请求，即当连接请求到达时，目的端口没有进程在监听，如果udp报文，产生一个端口不可达的ICMP报文，如果是TCP，使用复位，服务器发送RST给客户。 正常终止连接客户与服务器建立TCP连接，">
+  <meta name="description" content="在WebServer HTTP服务器中，涉及到了对客户端突发的各种异常情况的处理，在这里总结一下。 端口不可达在连接建立以前的情况，产生RST复位的一种常见情况是，到不存在端口的连接请求，即当连接请求到达时，目的端口没有进程在监听，如果udp报文，产生一个端口不可达的ICMP报文，如果是TCP，使用复位，服务器发送RST给客户。 正常终止连接客户与服务器建立TCP连接，客户向服务器发送数据，服务">
 <meta name="keywords" content="tcp&#x2F;ip">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TCP连接特殊情况">
 <meta property="og:url" content="http://zhouleian.github.io/2017/01/06/tcpquit/index.html">
 <meta property="og:site_name" content="坍缩">
-<meta property="og:description" content="# TCP连接特殊情况 在WebServer HTTP服务器中，涉及到了对客户端突发的各种异常情况的处理，在这里总结一下。 端口不可达在连接建立以前的情况，产生RST复位的一种常见情况是，到不存在端口的连接请求，即当连接请求到达时，目的端口没有进程在监听，如果udp报文，产生一个端口不可达的ICMP报文，如果是TCP，使用复位，服务器发送RST给客户。 正常终止连接客户与服务器建立TCP连接，">
-<meta property="og:updated_time" content="2017-06-27T14:56:24.961Z">
+<meta property="og:description" content="在WebServer HTTP服务器中，涉及到了对客户端突发的各种异常情况的处理，在这里总结一下。 端口不可达在连接建立以前的情况，产生RST复位的一种常见情况是，到不存在端口的连接请求，即当连接请求到达时，目的端口没有进程在监听，如果udp报文，产生一个端口不可达的ICMP报文，如果是TCP，使用复位，服务器发送RST给客户。 正常终止连接客户与服务器建立TCP连接，客户向服务器发送数据，服务">
+<meta property="og:updated_time" content="2017-06-27T14:58:09.103Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TCP连接特殊情况">
-<meta name="twitter:description" content="# TCP连接特殊情况 在WebServer HTTP服务器中，涉及到了对客户端突发的各种异常情况的处理，在这里总结一下。 端口不可达在连接建立以前的情况，产生RST复位的一种常见情况是，到不存在端口的连接请求，即当连接请求到达时，目的端口没有进程在监听，如果udp报文，产生一个端口不可达的ICMP报文，如果是TCP，使用复位，服务器发送RST给客户。 正常终止连接客户与服务器建立TCP连接，">
+<meta name="twitter:description" content="在WebServer HTTP服务器中，涉及到了对客户端突发的各种异常情况的处理，在这里总结一下。 端口不可达在连接建立以前的情况，产生RST复位的一种常见情况是，到不存在端口的连接请求，即当连接请求到达时，目的端口没有进程在监听，如果udp报文，产生一个端口不可达的ICMP报文，如果是TCP，使用复位，服务器发送RST给客户。 正常终止连接客户与服务器建立TCP连接，客户向服务器发送数据，服务">
   
     <link rel="alternative" href="/atom.xml" title="坍缩" type="application/atom+xml">
   
@@ -198,7 +198,6 @@
     <div class="article-entry" itemprop="articleBody">
       
         <hr>
-<p>﻿# TCP连接特殊情况</p>
 <p>在WebServer HTTP服务器中，涉及到了对客户端突发的各种异常情况的处理，在这里总结一下。</p>
 <h2 id="端口不可达"><a href="#端口不可达" class="headerlink" title="端口不可达"></a>端口不可达</h2><p>在连接建立以前的情况，产生RST复位的一种常见情况是，到不存在端口的连接请求，即当连接请求到达时，目的端口没有进程在监听，如果udp报文，产生一个端口不可达的ICMP报文，如果是TCP，使用复位，服务器发送RST给客户。</p>
 <h2 id="正常终止连接"><a href="#正常终止连接" class="headerlink" title="正常终止连接"></a>正常终止连接</h2><p>客户与服务器建立TCP连接，客户向服务器发送数据，服务器子进程建立连接回射该数据。<br>如果客户端正常断开，向服务器发送FIN，进行正常的四次挥手断开TCP连接。服务器接收到FIN后，发送ACK给客户，同时服务器TCP发送EOF给阻塞的服务器子进程readline调用，进而子进程终止。产生SIGCHLD信号，调用信号相应的处理函数，避免子进程变为僵尸进程。由于是服务器父进程阻塞于accept捕获的信号，内核使accept返回一个<code>EINTR错误</code>(accept慢系统调用被中断)，父进程不处理该错误，中止。</p>
