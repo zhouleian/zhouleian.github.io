@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>TCP连接特殊情况 | 坍缩</title>
+
+  <!-- keywords -->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="# TCP连接特殊情况 在WebServer HTTP服务器中，涉及到了对客户端突发的各种异常情况的处理，在这里总结一下。 端口不可达在连接建立以前的情况，产生RST复位的一种常见情况是，到不存在端口的连接请求，即当连接请求到达时，目的端口没有进程在监听，如果udp报文，产生一个端口不可达的ICMP报文，如果是TCP，使用复位，服务器发送RST给客户。 正常终止连接客户与服务器建立TCP连接，客">
+<meta name="keywords" content="tcp&#x2F;ip">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP连接特殊情况">
+<meta property="og:url" content="http://zhouleian.github.io/2017/02/25/tcpquit/index.html">
+<meta property="og:site_name" content="坍缩">
+<meta property="og:description" content="# TCP连接特殊情况 在WebServer HTTP服务器中，涉及到了对客户端突发的各种异常情况的处理，在这里总结一下。 端口不可达在连接建立以前的情况，产生RST复位的一种常见情况是，到不存在端口的连接请求，即当连接请求到达时，目的端口没有进程在监听，如果udp报文，产生一个端口不可达的ICMP报文，如果是TCP，使用复位，服务器发送RST给客户。 正常终止连接客户与服务器建立TCP连接，客">
+<meta property="og:updated_time" content="2017-06-27T14:48:34.671Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TCP连接特殊情况">
+<meta name="twitter:description" content="# TCP连接特殊情况 在WebServer HTTP服务器中，涉及到了对客户端突发的各种异常情况的处理，在这里总结一下。 端口不可达在连接建立以前的情况，产生RST复位的一种常见情况是，到不存在端口的连接请求，即当连接请求到达时，目的端口没有进程在监听，如果udp报文，产生一个端口不可达的ICMP报文，如果是TCP，使用复位，服务器发送RST给客户。 正常终止连接客户与服务器建立TCP连接，客">
+  
+    <link rel="alternative" href="/atom.xml" title="坍缩" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&pid=15.1">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+
+  <script src="//cdn.bootcss.com/require.js/2.3.2/require.min.js"></script>
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+
+  
+</head>
+<body>
+  <div id="container">
+    <div id="particles-js"></div>
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&amp;pid=15.1" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">大牙苏</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">书写是最好的思考</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/zhouleian/" title="github">github</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/tcp-ip/" style="font-size: 10px;">tcp/ip</a> <a href="/tags/网络编程/" style="font-size: 20px;">网络编程</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">大牙苏</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&amp;pid=15.1" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">大牙苏</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">书写是最好的思考</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/zhouleian/" title="github">github</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-tcpquit" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/02/25/tcpquit/" class="article-date">
+  	<time datetime="2017-02-25T06:05:19.000Z" itemprop="datePublished">2017-02-25</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      TCP连接特殊情况
+      
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li></ul>
+	</div>
+
+        
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>﻿# TCP连接特殊情况</p>
+<p>在WebServer HTTP服务器中，涉及到了对客户端突发的各种异常情况的处理，在这里总结一下。</p>
+<h1 id="端口不可达"><a href="#端口不可达" class="headerlink" title="端口不可达"></a>端口不可达</h1><p>在连接建立以前的情况，产生RST复位的一种常见情况是，到不存在端口的连接请求，即当连接请求到达时，目的端口没有进程在监听，如果udp报文，产生一个端口不可达的ICMP报文，如果是TCP，使用复位，服务器发送RST给客户。</p>
+<h1 id="正常终止连接"><a href="#正常终止连接" class="headerlink" title="正常终止连接"></a>正常终止连接</h1><p>客户与服务器建立TCP连接，客户向服务器发送数据，服务器子进程建立连接回射该数据。<br>如果客户端正常断开，向服务器发送FIN，进行正常的四次挥手断开TCP连接。服务器接收到FIN后，发送ACK给客户，同时服务器TCP发送EOF给阻塞的服务器子进程readline调用，进而子进程终止。产生SIGCHLD信号，调用信号相应的处理函数，避免子进程变为僵尸进程。由于是服务器父进程阻塞于accept捕获的信号，内核使accept返回一个<code>EINTR错误</code>(accept慢系统调用被中断)，父进程不处理该错误，中止。</p>
+<h1 id="异常终止连接"><a href="#异常终止连接" class="headerlink" title="异常终止连接"></a>异常终止连接</h1><p>连接建立之后，可能因为客户或服务器的异常终止连接。客户端通过发送FIN正常终止连接，异常终止连接分为客户和服务器的异常终止。</p>
+<h2 id="客户发送RST复位异常终止"><a href="#客户发送RST复位异常终止" class="headerlink" title="客户发送RST复位异常终止"></a>客户发送RST复位异常终止</h2><p>客户端发送的是RST复位报文段，异常终止连接。RST报文包含了一个序号和一个确认序号，服务器端接收RST报文段，不发送任何响应，不进行任何确认，而是产生一个“对端复位”的差错，终止连接，通知应用层连接复位。</p>
+<h2 id="半打开连接"><a href="#半打开连接" class="headerlink" title="半打开连接"></a>半打开连接</h2><p>一方已经关闭或者异常终止连接，另一方却不知道，这样的TCP连接称为半打开连接。半打开连接的一种常见情况是<code>客户机突然断电</code>，而不是正常结束连接再关机，导致服务器不知道客户端关闭连接。如何发现这种半打开连接，使得TCP的一端发现另一端已经关闭？</p>
+<p>一个典型的例子：假设A，B（服务器）之间建立了TCP连接，A可以向B发送数据了。服务器和客户端都有可能异常终止连接。</p>
+<p>#客户端异常终止<br>断开A（客户），服务器B上留下一个半打开连接，B服务器一直在等待A的数据，则服务器将永远等待下去。解决方法是保活定时器的保活功能（服务器和客户端都可以使用这个选项，但是一般是服务器端设置的，所以这里默认使用保活选项的是服务器，即默认客户异常终止）。</p>
+<h2 id="保活定时器"><a href="#保活定时器" class="headerlink" title="保活定时器"></a>保活定时器</h2><p>保活功能由SO_KEEPALIVE 保持连接检测对方主机是否崩溃，避免（服务器）永远阻塞于TCP连接的输入。对于一个给定连接如果2个小时没有任何动作就超时，超时后会发送探测报文。然后通过对端是否响应、响应是否符合预期，来判断对端是否正常，如果不正常，就主动关闭连接，而不用等待HTTP层的关闭了。</p>
+<p>当服务器发送探测报文时，客户端可能处于4种不同的情况：仍然正常运行、已经崩溃、已经崩溃并重启了、由于中间链路问题不可达。在不同的情况下，服务器会得到不一样的反馈。<br>(1) 检测正常：客户主机依然正常运行，并且从服务器端可达<br>客户端的TCP响应正常，从而服务器端知道对方是正常的。保活定时器会在两小时以后继续触发。如果在2小时内有数据通过这个连接，则定时器在交换数据后2小时再复位。这种情况下，是TCp负责完成的，服务器应用进程没有参与。</p>
+<p>(2) 客户主机已经崩溃，并且关闭或者正在重新启动<br>客户端的TCP没有响应，服务器没有收到对探测包的响应，此后每隔75s发送探测报文，一共发送10次。如果没有任何响应，服务器认为客户已经关闭并终止连接。socket函数会返回-1，errno设置为ETIMEDOUT，表示连接超时。</p>
+<p>(3) 客户主机已经崩溃，并且重新启动了<br>服务器会收到一个对其保活探查的响应，即客户端的TCP发送RST，服务器端收到后关闭此连接。<br>socket函数会返回-1，errno设置为ECONNRESET，表示连接被对端复位了。</p>
+<p>(4) 客户主机依然正常运行，但是从服务器不可达。<br>可能是中间的某个路由器已经崩溃，或者是某段线路出现问题，双方的反应和第二种是一样的，因为服务器不能区分对端异常与中间链路异常。<br>socket函数会返回-1，errno设置为EHOSTUNREACH，表示对端不可达。</p>
+<p>（5）客户主机关闭<br>这和第二种情况不同，5指的是客户主机正常关闭，这时，所有进程正常终止，使客户TCP发送FIN，服务器进程接收到FIN，向服务器进程报告文件结束，服务器可以检测这个情况。</p>
+<h1 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h1><p>服务器异常，客户端向服务器发出请求。</p>
+<h2 id="服务器进程终止"><a href="#服务器进程终止" class="headerlink" title="服务器进程终止"></a>服务器进程终止</h2><p>服务器进程在客户之前终止，客户发生了什么？<br>处理客户连接的子进程终止，向客户端发送FIN，在阻塞情况下，客户此时阻塞于终端输入fgets，当给客户终端输入并向服务器端发送时由于先前打开的进程已经终止，所以服务器响应RST，但这时候客户端发送完数据以后阻塞于readline调用，由于收到服务器的FIN调用readline返回0即EOF，但客户没有收到这个0，返回“server terminated prematurely”错误信息并退出。</p>
+<p>但是可能在客户读回任何数据之前执行两次写操作，这样第一次返回RST，第二次返回的就是SIGPPE信号。</p>
+<h2 id="SIGPIPE信号"><a href="#SIGPIPE信号" class="headerlink" title="SIGPIPE信号"></a>SIGPIPE信号</h2><h3 id="出现场景"><a href="#出现场景" class="headerlink" title="出现场景"></a>出现场景</h3><p>浏览器与服务端建立连接后，若刷新或关闭浏览器窗口（未监听相应事件并处理），服务端无法得知连接断开，按理说，这种情况属于client异常终止，跟拔网线的情况类似。这种情况下，服务端不知情，仍保留此连接，仍按照既定逻辑向client写数据，写了两次后（或者从客户向服务器写），服务端程序终止（多次测试，均是第2次后终止），不是崩溃，是异常终止。</p>
+<h3 id="信号处理"><a href="#信号处理" class="headerlink" title="信号处理"></a>信号处理</h3><p>SIFPIPE信号默认是终止进程，因此必须捕获这个信号以免程序被不情愿的终止。</p>
+<h2 id="服务器主机崩溃并重启"><a href="#服务器主机崩溃并重启" class="headerlink" title="服务器主机崩溃并重启"></a>服务器主机崩溃并重启</h2><p>断开B的以太网电缆，重启B，重新连接到网络上，（断开电缆是因为直接重启B有可能B向A发送FIN正常断开连接，为防止这种情况，断开电缆）。</p>
+<p>这时候A并不知道B已经断开连接（半打开连接），A继续向B发送数据，由于B的服务器已经重新启动，已经丢失了崩溃前的所有连接信息，所以B不知道A发送的报文段中的连接，TCP对这种情况的处理是：B发送RST复位报文段，A接收到B发送的复位报文段时正阻塞于read调用，该调用返回ECONNRESET错误，并显示：连接已被对端关闭：Connection closed by foreign host.</p>
+<h2 id="服务器主机崩溃未重启"><a href="#服务器主机崩溃未重启" class="headerlink" title="服务器主机崩溃未重启"></a>服务器主机崩溃未重启</h2><p>这种情景是：在不同的机器上运行客户与服务器，在首次确认客户服务器建立连接能正常工作后，从网络上断开服务器主机，即服务器主机崩溃，而不是正常的关机命令，这个已有网络连接上发不出任何东西。此时如果客户继续向服务器发送数据，情况是怎么样的？（同时，这样我模拟了当客户发送数据时服务器主机不可达的情形（建立连接后某些中间路由器不工作））</p>
+<ol>
+<li><p>客户向服务器发送数据：在客户上输入一行文本，它由write写入内核，再由客户TCP作为一个数据分节发送给服务器。客户随后阻塞于readline调用（服务器回射，客户read回射的数据），等待服务器的应答，期待从服务器接受一个ACK。</p>
+</li>
+<li><p>客户得不到 ACK，便持续重传数据分节。（源自Berkeley的实现重传该数据分节12次，共等待约9分钟才放弃重传。）</p>
+</li>
+<li><p>重传的这段时间， 服务器主机崩溃没有重新启动或者服务器主机没有崩溃但从网络上不可达的情况，那么主机仍然不可达，当客户TCP最终放弃重传，返回客户进程一个错误。</p>
+</li>
+<li><p>客户阻塞在readline调用上，该调用将返回一个错误。返回的错误有两种：</p>
+</li>
+</ol>
+<ul>
+<li><p>服务器已崩溃，从而对客户的数据分节根本没有响应，那么所返回的错误是ETIMEDOUT。</p>
+</li>
+<li><p>如果某个中间路由器判定服务器主机已不可达，从而响应以一个“destination unreachable”ICMP，那么所返回的错误是EHOSTUNREACH或ENETUNREACH。</p>
+<p> 也就是说，服务器主机崩溃的情况，如果客户向服务器发送数据，通过重传等待，客户最后还是发现对端主机已崩溃或不可达。但有时候我们需要更快地检测出这种情况，而不是不得不等待9分钟。所用的方法就是对read调用设置一个超时。<br> 上面的情形只有在向服务器主机发送数据时，才能检测出它已经崩溃，如果我们不主动发送主句也想检测出服务器主机的崩溃，那么就需要用到SO_KEEPALIVE这个套接口选项。（保活）</p>
+</li>
+</ul>
+<p>##服务器主机关机</p>
+<p>   Unix系统关机时，init进程通常先给所有进程发送SIGTERM信号（该信号可被捕获），再等待一段固定的时间（一般在5~20秒之间），然后给所有仍在运行的进程发送SIGKILL信号（该信号不能被捕获）。这么做是留给所有运行中的进程一小段时间来清除和终止。<br>   如果我们不捕获SIGTERM信号并终止，我们的服务器将由SIGKILL信号终止。当服务器进程终止时，它的所有打开着的描述字都被关闭，随后发生的步骤与第一节中讨论过的一样。正如第一节中所述的情形，我们必须在客户中使用select或poll函数，使得服务器进程的终止已经发生，客户马上检测到。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/02/25/socket/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">&lt;</strong>
+      <div class="article-nav-title">
+        
+          基本TCP套接字编程
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/01/01/WebServer/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Web Server</div>
+      <strong class="article-nav-caption">&gt;</strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="ds-share share" data-thread-key="tcpquit" data-title="TCP连接特殊情况" data-url="http://zhouleian.github.io/2017/02/25/tcpquit/"  data-images="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&amp;pid=15.1" data-content="TCP连接特殊情况">
+    <div class="ds-share-inline">
+      <ul  class="ds-share-icons-16">
+      	<li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+        <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+        <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+        <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+        <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+      </ul>
+      <div class="ds-share-icons-more">
+      </div>
+    </div>
+ </div>
+ 
+
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+      <div class="footer-left">
+        &copy; 2017 大牙苏
+      </div>
+        <div class="footer-right">
+          <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/smackgg/hexo-theme-smackdown" target="_blank">Smackdown</a>
+        </div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="/js/main.js"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js"></script>
+
+
+  </div>
+</body>
+</html>
