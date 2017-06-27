@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>基本TCP套接字编程 | 坍缩</title>
+
+  <!-- keywords -->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="基本函数接口socket函数#include  &amp;lt;sys/socket.h&amp;gt; int socket(int family, int type, int protocol);成功时返回一个非负整数，与文件描述符类似，称为套接字描述符 sockfd。 connect 函数123#include &amp;lt;sys/socket.h&amp;gt;int connect(int sockfd, co">
+<meta name="keywords" content="网络编程,tcp&#x2F;ip">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基本TCP套接字编程">
+<meta property="og:url" content="http://zhouleian.github.io/2017/01/10/socket/index.html">
+<meta property="og:site_name" content="坍缩">
+<meta property="og:description" content="基本函数接口socket函数#include  &amp;lt;sys/socket.h&amp;gt; int socket(int family, int type, int protocol);成功时返回一个非负整数，与文件描述符类似，称为套接字描述符 sockfd。 connect 函数123#include &amp;lt;sys/socket.h&amp;gt;int connect(int sockfd, co">
+<meta property="og:image" content="http://www.2cto.com/uploadfile/Collfiles/20160528/20160528090546362.png">
+<meta property="og:updated_time" content="2017-06-27T14:52:08.758Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基本TCP套接字编程">
+<meta name="twitter:description" content="基本函数接口socket函数#include  &amp;lt;sys/socket.h&amp;gt; int socket(int family, int type, int protocol);成功时返回一个非负整数，与文件描述符类似，称为套接字描述符 sockfd。 connect 函数123#include &amp;lt;sys/socket.h&amp;gt;int connect(int sockfd, co">
+<meta name="twitter:image" content="http://www.2cto.com/uploadfile/Collfiles/20160528/20160528090546362.png">
+  
+    <link rel="alternative" href="/atom.xml" title="坍缩" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&pid=15.1">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+
+  <script src="//cdn.bootcss.com/require.js/2.3.2/require.min.js"></script>
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+
+  
+</head>
+<body>
+  <div id="container">
+    <div id="particles-js"></div>
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&amp;pid=15.1" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">大牙苏</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">书写是最好的思考</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/zhouleian/" title="github">github</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/tcp-ip/" style="font-size: 10px;">tcp/ip</a> <a href="/tags/网络编程/" style="font-size: 20px;">网络编程</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">大牙苏</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&amp;pid=15.1" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">大牙苏</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">书写是最好的思考</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/zhouleian/" title="github">github</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-socket" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/01/10/socket/" class="article-date">
+  	<time datetime="2017-01-10T12:26:19.000Z" itemprop="datePublished">2017-01-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      基本TCP套接字编程
+      
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tcp-ip/">tcp/ip</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/网络编程/">网络编程</a></li></ul>
+	</div>
+
+        
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>﻿</p>
+<h1 id="基本函数接口"><a href="#基本函数接口" class="headerlink" title="基本函数接口"></a>基本函数接口</h1><h2 id="socket函数"><a href="#socket函数" class="headerlink" title="socket函数"></a>socket函数</h2><p><code>#include  &lt;sys/socket.h&gt;</code></p>
+<p>int socket(int family, int type, int protocol);<br>成功时返回一个非负整数，与文件描述符类似，称为套接字描述符 sockfd。</p>
+<h2 id="connect-函数"><a href="#connect-函数" class="headerlink" title="connect 函数"></a>connect 函数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#include &lt;sys/socket.h&gt;</div><div class="line">int connect(int sockfd, const struct sockaddr *servaddr, socklen_t addrlen);</div><div class="line">connect由客户端程序调用，用来建立与TCP服务器的连接。成功返回0, 出错返回-1</div></pre></td></tr></table></figure>
+<ul>
+<li>sockfd 是socket()函数返回的套接字描述符</li>
+<li>servaddr 指向套接字地址结构的指针</li>
+<li>addrlen 套接字地址结构的大小</li>
+</ul>
+<blockquote>
+<p>connect函数是由客户端来调用的，首先，servaddr结构包含了IP地址和端口号，在调用connect之前要提前定义好，因为是在客户端调用，所以，connect中的IP地址和port是指明服务器端的IP地址和port，也就是TCP连接中的目的地址和端口号。那么，客户端也就是TCP连接的源IP地址和端口号由谁来指定？<br>第一种情况是，客户调用bind函数来指定。<br>第二种，就是客户不调用bind指定，而是由内核确定一个源地址，并选择一个临时端口作为源端口。</p>
+</blockquote>
+<p>对于TCP套接字，调用connect函数会激发TCP的三次握手过程，而且仅在连接建立成功或出错时才返回。出错情况主要有：</p>
+<ul>
+<li>TCP客户没有收到SYN分节的响应。（内核发一个SYN若无响应则等待6s再发一个，若仍无响应则等待24s后再发送一个。总共等待75s仍未收到则返回错误ETIMEDOUT）</li>
+<li>若对客户的SYN的响应是RST，表明服务器主机在我们指定的端口上没有进程在等待与之连接，客户端收到RST就会返回ECONNREFUSED错误。<br>产生RST的三个条件是：目的地SYN到达却没有监听的服务器；TCP想取消一个已有连接；TCP接收到一个根本不存在连接上的分节（<code>这种情况可能是因为原先有一个连接，在连接存在的时候，有一个分节在传输，但是后来由于
+网络故障或者其他原因，这个分节直到连接断开才到达对端，导致这个分节就成了一个根本不存在的
+连接上的分节</code>）。</li>
+<li>若客户发出的SYN在中间的某个路由器上引发了一个“destination unreachable”（目的地不可达）ICMP错误，则认为是一种软错误，在某个规定时间（比如上述75s）没有收到回应，内核则会把保存的信息作为EHOSTUNREACH或ENETUNREACH错误返回给进程。（<code>这种软中断的情况在Traceroute中会用到</code>）</li>
+</ul>
+<p>connect调用导致客户socketfd从CLOSED状态转移到SYN_SENT状态，若成功返回，则再转移到ESTAVLISHED状态。若connect失败则该套接字不再可用，必须关闭，我们不能对这样的套接字再次调用connect函数，当循环调用函数connect为给定主机尝试各个ip地址直到有一个成功时，在每次connect失败后，都必须close当前的套接字描述符并从新调用socket。</p>
+<h2 id="bind函数"><a href="#bind函数" class="headerlink" title="bind函数"></a>bind函数</h2><p>connect函数把目的IP地址和目的port在函数中声明，bind函数则是把一个本地协议地址赋予了一个套接字。</p>
+<p>在调用bind函数可以制定一个特定的端口号，或者制定一个IP地址，或者两个都指定，后者两者都不指定。<br>函数声明如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#include &lt;sys/socket.h&gt;</div><div class="line">int bind(int sockfd, const struct sockaddr * myaddr,socklen_t addrlen);</div></pre></td></tr></table></figure></p>
+<p>参数说明：</p>
+<ul>
+<li>sockfd：套接字描述符</li>
+<li>myaddr：套接字地址结构的指针</li>
+<li>addrlen：上述结构的长度，防止内核越界</li>
+</ul>
+<p>可以在客户端或服务器端使用。如果不调用bind函数，当调用connect或listen的时候，TCP会创建一个临时的端口，这对于客户端来说很常见（毕竟我们从来没见过客户端程序调用过bind函数），而对于TCP服务器来说就比较少见了，因为TCP服务器就是通过其众所周知的端口被大家认识。</p>
+<p>进程可以通过bind函数把一个特定的IP地址绑定到它的套接字上：</p>
+<blockquote>
+<p>对于客户端来说，这没有必要，因为内核将根据所外出网络接口来选择源IP地址,而所用外出接口则取决于到达服务器所需的路径。<br>对于服务器来说，这将限定服务器只接收目的地为该IP地址的客户连接。<br>所以，一般情况下，都是客户端不bind，服务器端一般是bind的。</p>
+</blockquote>
+<p>对于IPv4来说，通配地址由常值INADDR_ANY（0.0.0.0）来指定，其值一般为0，它(通配地址)告知内核去选择IP地址，因此我们经常看到如下语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">struct sockaddr_in servaddr;</div><div class="line">servaddr.sin_addr.s_addr = htonl(INADDR_ANY);</div><div class="line">此时，服务器接收所有的源地址发来的连接。</div></pre></td></tr></table></figure></p>
+<p>同理，端口号指定为0时，也是由内核指定port，内核就在bind被调用的时候选择一个临时端口，不过bind函数不返回内核选择的值，第二个参数有const限定。如果想要直到内核所选择的临时端口值，必须调用getsockname来返回协议地址。</p>
+<p>最后需要注意的是：bind绑定保留端口号时需要超级用户权限。这就是为什么我们在linux下执行服务器程序的时候要加sudo，如果没有超级用户权限，绑定将会失败。</p>
+<h2 id="listen函数"><a href="#listen函数" class="headerlink" title="listen函数"></a>listen函数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#include &lt;sys/socket.h&gt;</div><div class="line">int listen(int sockfd, int backlog);</div></pre></td></tr></table></figure>
+<p>当socket函数创建一个套接字时，它被假设为一个主动套接字，将要调用connect去发起连接。listen可以把它转换为被动套接字，指示内核应该接受指向该套接字的连接请求。<br>backlog 规定内核为相应套按字排队的最大连接个数。<br>内核为一个给定的监听套接字维护两个队列：</p>
+<ul>
+<li>未完成连接队列:表示服务器接收到客户端的SYN但还未建立三路握手连接的套接字（SYN_RCVD状态）</li>
+<li>已完成连接队列:表示已完成三路握手连接过程的套接字（ESTABLISHED状态）</li>
+</ul>
+<p>结合三路握手的过程：<br>1.客户调用connect发送SYN分节<br>2.服务器收到SYN分节在未完成队列建立条目<br>3.直到三鹿握手的第三个分节（客户对服务器SYN的ACK）到达，此时该项目从未完成队列移动到已完成队列的队尾。<br>4.当进程调用accept时，已完成队列出队，当已完成队列为空时，accept函数阻塞，进程睡眠，直到已完成队列入队。</p>
+<p>所以说，如果三路握手正常完成，未完成连接队列中的任何一项在其中存留的时间就是服务器在收到客户端的SYN和收到客户端的ACK这段时间（RTT）。<br> <img src="http://www.2cto.com/uploadfile/Collfiles/20160528/20160528090546362.png" alt="此处输入图片的描述"></p>
+<p>当进程调用accept函数时，就是将已完成队列的队头项返回给进程。</p>
+<h2 id="accept函数"><a href="#accept函数" class="headerlink" title="accept函数"></a>accept函数</h2><p>TCP服务器调用accept函数，函数声明如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#include</div><div class="line">int accept (int sockfd, struct sockaddr *cliaddr ,socklen_t * addrlen);</div></pre></td></tr></table></figure></p>
+<p>参数说明：<br>sockfd：套接字描述符<br>cliaddr：对端（客户）的协议地址<br>addr：大小<br>当accept调用成功，将返回一个新的套接字描述符，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">int connfd = Accept(listenfd,(SA*)NULL,NULL);</div></pre></td></tr></table></figure></p>
+<p>其中我们称listenfd为监听套接字描述符，称connfd为已连接套接字描述符。，区分这两个套接字十分重要，一个服务器进程通常只需要一个监听套接字，但是却能够有很多已连接套接字（比如通过fork创建子进程），也就是说每有一个客户端建立连接时就会创建一个connectfd，当连接结束时，相应的已连接套接字就会被关闭。<br>两个程序TCP通信，就好像是两个楼里面的人传递消息一样，比如，8#222和7#222,楼号就是IP地址，通过IP地址找到对应的主机，但是要找哪个房间还需要进一步通过房间号确定，两台主机应用进程之间要通信要通过socket，socket就是房间号，所以socket要一样，否则，服务器端只监听端口222的连接请求，如果客户端发来一个223端口的，由于223端口没有在监听，所以无法建立连接，客户端的onnect中的IP地址和port是指明服务器端的IP地址和port，也就是TCP连接中的目的地址和端口号，由此，<code>socket = &lt;IP地址，端口号&gt;</code>服务器和客户端中的端口号必须一致，</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/02/01/WebServer/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">&lt;</strong>
+      <div class="article-nav-title">
+        
+          Web Server
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/01/06/tcpquit/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">TCP连接特殊情况</div>
+      <strong class="article-nav-caption">&gt;</strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="ds-share share" data-thread-key="socket" data-title="基本TCP套接字编程" data-url="http://zhouleian.github.io/2017/01/10/socket/"  data-images="http://tse3.mm.bing.net/th?id=OIP.VVvw3JVCoD1EFdVW6mC5dgEAEA&amp;pid=15.1" data-content="基本TCP套接字编程">
+    <div class="ds-share-inline">
+      <ul  class="ds-share-icons-16">
+      	<li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+        <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+        <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+        <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+        <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+      </ul>
+      <div class="ds-share-icons-more">
+      </div>
+    </div>
+ </div>
+ 
+
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+      <div class="footer-left">
+        &copy; 2017 大牙苏
+      </div>
+        <div class="footer-right">
+          <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/smackgg/hexo-theme-smackdown" target="_blank">Smackdown</a>
+        </div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="/js/main.js"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js"></script>
+
+
+  </div>
+</body>
+</html>
