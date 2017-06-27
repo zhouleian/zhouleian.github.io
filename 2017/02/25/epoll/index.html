@@ -9,13 +9,13 @@
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="#Introduction事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。 本文探究了在linux系统下常用的epoll的原理及其使用方法，">
+  <meta name="description" content="Introduction事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。 本文探究了在linux系统下常用的epoll的原理及其使用方法，总">
 <meta name="keywords" content="网络编程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="事件驱动模型epoll">
 <meta property="og:url" content="http://zhouleian.github.io/2017/02/25/epoll/index.html">
 <meta property="og:site_name" content="坍缩">
-<meta property="og:description" content="#Introduction事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。 本文探究了在linux系统下常用的epoll的原理及其使用方法，">
+<meta property="og:description" content="Introduction事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。 本文探究了在linux系统下常用的epoll的原理及其使用方法，总">
 <meta property="og:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image001.jpg">
 <meta property="og:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image002.jpg">
 <meta property="og:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image003.jpg">
@@ -23,10 +23,10 @@
 <meta property="og:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image005.jpg">
 <meta property="og:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image006.jpg">
 <meta property="og:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image007.jpg">
-<meta property="og:updated_time" content="2017-06-27T14:47:37.408Z">
+<meta property="og:updated_time" content="2017-06-27T14:54:33.356Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="事件驱动模型epoll">
-<meta name="twitter:description" content="#Introduction事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。 本文探究了在linux系统下常用的epoll的原理及其使用方法，">
+<meta name="twitter:description" content="Introduction事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。 本文探究了在linux系统下常用的epoll的原理及其使用方法，总">
 <meta name="twitter:image" content="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image001.jpg">
   
     <link rel="alternative" href="/atom.xml" title="坍缩" type="application/atom+xml">
@@ -206,12 +206,10 @@
     <div class="article-entry" itemprop="articleBody">
       
         <hr>
-<p>#Introduction<br>事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；<br>事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。</p>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>事件驱动为广大的程序员所熟悉，其最为人津津乐道的是在图形化界面编程中的应用；<br>事实上，在网络编程中事件驱动也被广泛使用，并大规模部署在高连接数高吞吐量的服务器程序中，如 http 服务器程序、ftp服务器程序等。相比于传统的网络编程方式，事件驱动能够极大的降低资源占用，增大服务接待能力，并提高网络传输效率。</p>
 <p>本文探究了在linux系统下常用的epoll的原理及其使用方法，总结了自己学习并发服务器编程过程中遇到的问题。</p>
-<p>#阻塞式io</p>
-<p>传统上, 网络服务器每个连接使用单独的进程或线程来实现。我们来看一个最简单的客户端／服务器交互场景：<br><img src="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image001.jpg" alt="此处输入图片的描述"><br>除非使用fcntl显示指定，几乎所有IO接口都是阻塞型的。这给网络编程带来了很大问题，比如服务器调用send()/recv()的时候，线程会被阻塞，在此期间无法执行任何运算或响应网络请求，server在处理一个客户请求的时候无法接受别的客户，即如果在服务器阻塞时有新的客户connect，那么新的客户将得不到响应。这个程序无法同时满足两个想得到服务的用户，这是无法容忍的，试想一下你在用微信，然后告诉你有人在用，你必须等那个人走了以后才能用。这时候我们会想到使用多线程／多进程模型来实现服务器。</p>
-<p>#多进程／线程服务器</p>
-<p>应对多客户机的网络应用，最简单的解决方式是在服务器端使用多线程（或多进程）。多线程（或多进程）的目的是让每个连接都拥有独立的线程（或进程），这样任何一个连接的阻塞都不会影响其他的连接。</p>
+<h1 id="阻塞式io"><a href="#阻塞式io" class="headerlink" title="阻塞式io"></a>阻塞式io</h1><p>传统上, 网络服务器每个连接使用单独的进程或线程来实现。我们来看一个最简单的客户端／服务器交互场景：<br><img src="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image001.jpg" alt="此处输入图片的描述"><br>除非使用fcntl显示指定，几乎所有IO接口都是阻塞型的。这给网络编程带来了很大问题，比如服务器调用send()/recv()的时候，线程会被阻塞，在此期间无法执行任何运算或响应网络请求，server在处理一个客户请求的时候无法接受别的客户，即如果在服务器阻塞时有新的客户connect，那么新的客户将得不到响应。这个程序无法同时满足两个想得到服务的用户，这是无法容忍的，试想一下你在用微信，然后告诉你有人在用，你必须等那个人走了以后才能用。这时候我们会想到使用多线程／多进程模型来实现服务器。</p>
+<h1 id="多进程／线程服务器"><a href="#多进程／线程服务器" class="headerlink" title="多进程／线程服务器"></a>多进程／线程服务器</h1><p>应对多客户机的网络应用，最简单的解决方式是在服务器端使用多线程（或多进程）。多线程（或多进程）的目的是让每个连接都拥有独立的线程（或进程），这样任何一个连接的阻塞都不会影响其他的连接。</p>
 <p>具体使用多进程还是多线程，并没有一个特定的模式。传统意义上，进程的开销要远远大于线程，所以，如果需要同时为较多的客户机提供服务，则不推荐使用多进程；如果单个服务执行体需要消耗较多的 CPU 资源，譬如需要进行大规模或长时间的数据运算或文件访问，则进程较为安全。通常，使用 pthread_create () 创建新线程，fork() 创建新进程。</p>
 <p>我们假设对上述的服务器/客户机模型，提出更高的要求，即让服务器同时为多个客户机提供一问一答的服务。于是有了如下的模型。</p>
 <p><img src="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image002.jpg" alt="此处输入图片的描述"><br>在上述的线程 / 时间图例中，主线程持续等待客户端的连接请求，如果有连接，则创建新线程，并在新线程中提供为前例同样的问答服务。<br>上述多线程的服务器模型似乎完美的解决了为多个客户机提供问答服务的要求，但其实并不尽然。</p>
@@ -227,12 +225,11 @@
 </ul>
 <p>所以，换用线程虽然能解决fork开销的问题，但是调度器和内存的问题还是无法解决。所以进程和线程在本质上是一样的，被称为process-per-connection model。因为无法处理高并发而不被业界使用。</p>
 <p>接下来我们可能会考虑使用“线程池”或“连接池”。</p>
-<p>#线程池<br>“线程池”旨在减少创建和销毁线程的频率，其维持一定合理固定数量的线程，并让空闲的线程重新承担新的执行任务。“连接池”维持连接的缓存池，基本架构是有一个loop用来accept连接，之后把这个连接分配给线程池中的某个线程，处理完了以后这个线程又可以处理别的连接。尽量重用已有的连接、减少创建和关闭连接的频率。这两种技术都可以很好的降低系统开销，都被广泛应用很多大型系统，如 websphere、tomcat 和各种数据库等。</p>
+<h1 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h1><p>“线程池”旨在减少创建和销毁线程的频率，其维持一定合理固定数量的线程，并让空闲的线程重新承担新的执行任务。“连接池”维持连接的缓存池，基本架构是有一个loop用来accept连接，之后把这个连接分配给线程池中的某个线程，处理完了以后这个线程又可以处理别的连接。尽量重用已有的连接、减少创建和关闭连接的频率。这两种技术都可以很好的降低系统开销，都被广泛应用很多大型系统，如 websphere、tomcat 和各种数据库等。</p>
 <p>但是，“线程池”和“连接池”技术也只是在一定程度上缓解了频繁调用 IO 接口带来的资源占用。而且，所谓“池”始终有其上限，当请求大大超过上限时，假如有n个线程，当现成调用read，天知道对方什么时候发来新的数据，于是这个线程就被这个read给阻塞住了（因为默认情况下fd是blocking的，即如果这个fd上没有数据，调用read会阻塞住进程），什么都不能干，第(n+1)个长连接来了，还是无法处理。“池”构成的系统对外界的响应并不比没有池的时候效果好多少。所以使用“池”必须考虑其面临的响应规模，并根据响应规模调整“池”的大小。</p>
 <p>对应上例中的所面临的可能同时出现的上千甚至上万次的客户端请求，“线程池”或“连接池”或许可以缓解部分压力，但是不能解决所有问题。</p>
 <p>总之，多线程模型可以方便高效的解决小规模的服务请求，但面对大规模的服务请求，多线程模型并不是最佳方案。下来我将讨论用非阻塞接口来尝试解决这个问题。</p>
-<p>#非阻塞服务器程序</p>
-<p>以上面临的很多问题，一定程度是IO接口的阻塞特性导致的。多线程是一个解决方案，还一个方案就是使用非阻塞的接口。</p>
+<h1 id="非阻塞服务器程序"><a href="#非阻塞服务器程序" class="headerlink" title="非阻塞服务器程序"></a>非阻塞服务器程序</h1><p>以上面临的很多问题，一定程度是IO接口的阻塞特性导致的。多线程是一个解决方案，还一个方案就是使用非阻塞的接口。</p>
 <p>非阻塞的接口相比于阻塞型接口的显著差异在于，在被调用之后立即返回。也就是说，当进程把一个套接字设置成非阻塞是在通知内核：当所请求的I/O操作非得把本进程投入睡眠才能完成时，不要把本进程投入睡眠，而是返回一个错误 eg. EWOULDBLOCK (UNP)<br>使用如下的函数可以将某句柄 fd 设为非阻塞状态。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">fcntl( fd, F_SETFL, O_NONBLOCK );</div></pre></td></tr></table></figure></p>
 <p>下面将给出只用一个线程，但能够同时从多个连接中检测数据是否送达，并且接受数据。<br><img src="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image003.jpg" alt="此处输入图片的描述"><br>在非阻塞状态下，recv() 接口在被调用后立即返回，返回值代表了不同的含义。如在本例中，</p>
 <ul>
@@ -244,8 +241,7 @@
 <p>可以看到服务器线程可以通过循环调用recv()接口，可以在单个线程内实现对所有连接的数据接收工作。</p>
 <p>但是上述模型绝不被推荐。因为，循环调用recv()将大幅度推高CPU占用率；此外，在这个方案中，recv() 更多的是起到检测“操作是否完成”的作用，由于服务器并不知道什么时候fd1,fd2,fd3的缓冲区上会有数据，所以就忙轮询，这样很耗费cpu的。所以需要一种预先告知内核准备就绪的能力，当内核一旦发现进程指定的一个或多个IO条件就绪，他就通知进程可以在套接字上读取或写入更多数据了，这个能力叫做<code>多路IO复用</code>.</p>
 <p>操作系统提供了更为高效的检测“操作是否完成”作用的接口，例如select()/poll()/epoll()/dev/poll / kqueue / libv等。</p>
-<p>#使用select()接口的基于事件驱动的服务器模型</p>
-<p>大部分Linux都支持Select函数，该函数用于探测多个文件句柄的状态变化。Manural上是这么描述的:</p>
+<h1 id="使用select-接口的基于事件驱动的服务器模型"><a href="#使用select-接口的基于事件驱动的服务器模型" class="headerlink" title="使用select()接口的基于事件驱动的服务器模型"></a>使用select()接口的基于事件驱动的服务器模型</h1><p>大部分Linux都支持Select函数，该函数用于探测多个文件句柄的状态变化。Manural上是这么描述的:</p>
 <blockquote>
 <p>select() and pselect() allow a program to monitor multiple file descriptors, waiting until one or more of the file descriptors become “ready” for some class of I/O operation (e.g., input possible). A file descriptor is considered ready if it is possible to perform the corre‐sponding I/O operation (e.g., read(2)) without blocking.</p>
 </blockquote>
@@ -263,19 +259,19 @@
 <p>但这个模型依旧有着很多问题。</p>
 <p>首先，select() 接口并不是实现“事件驱动”的最好选择。因为当需要探测的句柄值较大时，SELECT() 接口本身需要消耗大量时间去轮询各个句柄。很多操作系统提供了更为高效的接口，如 linux 提供了 epoll，BSD提供了kqueue，Solaris提供了/dev/poll…。如果需要实现更高效的服务器程序，类似 epoll 这样的接口更被推荐。遗憾的是不同的操作系统特供的epoll接口有很大差异，所以使用类似于 epoll 的接口实现具有较好跨平台能力的服务器会比较困难。</p>
 <p>其次，该模型将事件探测和事件响应夹杂在一起，在select轮询过程中，发现一个fd准备就绪，立马开始对事件的响应，响应结束才开始查询下一个fd是否可用，一旦事件响应的执行体庞大，则对整个模型是灾难性的。如下例，庞大的执行体1的将直接导致响应事件2的执行体迟迟得不到执行，并在很大程度上降低了事件探测的及时性.<br><img src="http://7xkwrm.com1.z0.glb.clouddn.com/epoll_image007.jpg" alt="此处输入图片的描述"></p>
-<p>#epoll<br>在实际应用中，select/poll监视的文件描述符可能会非常多，如果每次只是返回一小部分，那么，这种情况下select/poll显得不够高效。</p>
+<h1 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h1><p>在实际应用中，select/poll监视的文件描述符可能会非常多，如果每次只是返回一小部分，那么，这种情况下select/poll显得不够高效。</p>
 <ul>
 <li>select (2) 可以一次监视多达 FD_SETSIZE 的描述符数量, 通常是在 libc 编译时确定。</li>
 <li>poll (2) 它没有固定的一次监视描述符限制, 但我们必须对所有传递的描述符进行线性扫描, 每次检查就绪通知, 需要 o (n) 这个过程慢。</li>
 </ul>
 <p>针对select的这些缺陷，在linux中提出了epoll，epoll没有这样的固定限制,也不执行任何线性扫描。因此,它能够更好地执行并处理更多的事件。epoll的接口非常简单，一共就三个函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">int epoll_create(int size);</div><div class="line">int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);</div><div class="line">int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);</div></pre></td></tr></table></figure></p>
 <p>epoll 实例由 epoll_create (2) 或 epoll_create1 (2) (它们采用不同的参数) 创建, 返回一个 epoll 实例。epoll_ctl (2) 用于添加/删除 epoll 实例上要监视的描述符。要等待监视集上的事件, 使用 epoll_wait (2), 直到事件可用为止。</p>
-<p>##epoll模型<br>EPOLL事件有两种模型 Level Triggered (LT) 和 Edge Triggered (ET)：</p>
+<h2 id="epoll模型"><a href="#epoll模型" class="headerlink" title="epoll模型"></a>epoll模型</h2><p>EPOLL事件有两种模型 Level Triggered (LT) 和 Edge Triggered (ET)：</p>
 <ul>
 <li>LT(level triggered，水平触发模式)是缺省的工作方式，并且同时支持 block 和 non-block socket。在这种做法中，内核告诉你一个文件描述符是否就绪了，然后你可以对这个就绪的fd进行IO操作。如果你不作任何操作，内核还是会继续通知你的，所以，这种模式编程出错误可能性要小一点。一直通知，效率低</li>
 <li>ET(edge-triggered，边缘触发模式)是高速工作方式，只支持no-block socket。在这种模式下，当描述符从未就绪变为就绪时，内核通过epoll告诉你。然后它会假设你知道文件描述符已经就绪，并且不会再为那个文件描述符发送更多的就绪通知，等到下次有新的数据进来的时候才会再次出发就绪事件。只通知一次效率高。</li>
 </ul>
-<p>#epoll、select、poll比较<br>比如，对于200个连接的应用来说，每一个连接都需要等待数据，写入或读取，在准备就绪之前，这些连接维持200个等待队列。</p>
+<h1 id="epoll、select、poll比较"><a href="#epoll、select、poll比较" class="headerlink" title="epoll、select、poll比较"></a>epoll、select、poll比较</h1><p>比如，对于200个连接的应用来说，每一个连接都需要等待数据，写入或读取，在准备就绪之前，这些连接维持200个等待队列。</p>
 <ul>
 <li>每次调用select的时候都要重复地从用户态读入参数（从用户空间拷贝到内核空间，这种这种切换和数据拷贝很消耗性能）。</li>
 <li>epoll的监控是持续的，epollfd本身需要和每一个连接建立联系，这种联系只需要在连接accept之后建立一次就可以，联系取消也之在连接断开进行一次，epoll自身维持一个等待队列，进程只需要放入一个等待队列，epoll_ctl注册事件的时候把fd拷贝进内核，而不是在epoll_wait的时候重复拷贝。epoll保证了每个fd在整个过程中只会拷贝一次。</li>
